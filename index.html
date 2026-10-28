@@ -1,0 +1,1445 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitch Deck Builder</title>
+<meta name="description" content="Build a live sponsor pitch deck: brand it, connect your numbers, embed your media, and share one link that stays current.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Source+Sans+3:wght@400;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;600;700&amp;display=swap">
+<style>
+/* ---------- Builder chrome ---------- */
+:root{
+  --c-bg:#eceff1; --c-panel:#ffffff; --c-ink:#1b232a; --c-ink2:#55606a; --c-ink3:#7a858e;
+  --c-rule:#d5dbe0; --c-field:#f6f8f9; --c-act:#14527a; --c-act-ink:#ffffff; --c-warn:#9a5b00;
+  --c-focus:#2a78d6;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --c-bg:#11171c; --c-panel:#182129; --c-ink:#e4e9ec; --c-ink2:#a9b4bd; --c-ink3:#83909a;
+    --c-rule:#2b3741; --c-field:#1f2a33; --c-act:#4f9fd6; --c-act-ink:#0d1418; --c-warn:#e3a54a; color-scheme:dark; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--c-bg);color:var(--c-ink);font:15px/1.45 "Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;font-stretch:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 14px;background:var(--c-panel);border-bottom:1px solid var(--c-rule)}
+.topbar .name{font-weight:800;font-stretch:118%;font-size:17px;letter-spacing:-.01em;margin-right:auto;white-space:nowrap}
+.topbar .name small{font-weight:500;font-stretch:100%;color:var(--c-ink3);font-size:13px;margin-left:8px}
+.btn{border:1px solid var(--c-rule);background:var(--c-panel);border-radius:6px;padding:6px 11px;cursor:pointer;line-height:1.2;white-space:nowrap}
+.btn:hover{border-color:var(--c-ink3)}
+.btn.primary{background:var(--c-act);border-color:var(--c-act);color:var(--c-act-ink);font-weight:600}
+.btn.small{padding:3px 8px;font-size:13px}
+.btn.icon{padding:3px 7px;font-size:13px;min-width:28px}
+.btn.danger:hover{border-color:#c43c3c;color:#c43c3c}
+
+.workspace{display:grid;grid-template-columns:minmax(340px,430px) 1fr;height:calc(100vh - 53px)}
+.editor{background:var(--c-panel);border-right:1px solid var(--c-rule);overflow:auto;display:flex;flex-direction:column}
+.tabs{display:flex;border-bottom:1px solid var(--c-rule);position:sticky;top:0;background:var(--c-panel);z-index:5}
+.tabs button{flex:1;border:0;background:none;padding:11px 8px;cursor:pointer;color:var(--c-ink2);border-bottom:2px solid transparent;font-weight:600}
+.tabs button[aria-selected="true"]{color:var(--c-ink);border-bottom-color:var(--c-act)}
+.panel{padding:14px 16px 40px}
+.panel[hidden]{display:none}
+.panel h2{font-size:15px;margin:18px 0 8px;font-weight:700}
+.panel h2:first-child{margin-top:4px}
+.hint{color:var(--c-ink2);font-size:13px;margin:4px 0 10px}
+.hint code{background:var(--c-field);padding:1px 4px;border-radius:3px;font-size:12px}
+
+.fld{margin:0 0 10px}
+.fld>label,.fld .lbl{display:block;font-size:13px;font-weight:600;color:var(--c-ink2);margin-bottom:3px}
+.fld input[type=text],.fld input[type=url],.fld input[type=number],.fld input[type=email],.fld select,.fld textarea{
+  width:100%;background:var(--c-field);border:1px solid var(--c-rule);border-radius:5px;padding:6px 8px}
+.fld textarea{min-height:70px;resize:vertical}
+.fld textarea.csv{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;min-height:120px;white-space:pre}
+.fld input[type=color]{width:44px;height:32px;border:1px solid var(--c-rule);border-radius:5px;padding:2px;background:var(--c-field)}
+.fld .row{display:flex;gap:6px;align-items:center}
+.fld .row>input{flex:1}
+.fld-checkbox label{display:flex;gap:8px;align-items:center;font-weight:500;color:var(--c-ink)}
+.fld .help{font-size:12px;color:var(--c-ink3);margin-top:3px}
+.checks{display:flex;flex-wrap:wrap;gap:4px 12px;background:var(--c-field);border:1px solid var(--c-rule);border-radius:5px;padding:6px 8px;font-size:13px}
+.checks label{display:flex;gap:5px;align-items:center}
+.checks .none{color:var(--c-ink3)}
+.items{display:flex;flex-direction:column;gap:8px}
+fieldset.item{border:1px solid var(--c-rule);border-radius:6px;padding:8px 10px 2px;margin:0}
+fieldset.item legend{display:flex;gap:4px;align-items:center;padding:0 4px;font-size:13px;font-weight:600;max-width:100%}
+fieldset.item legend span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+
+details.card{border:1px solid var(--c-rule);border-radius:7px;margin-bottom:8px;background:var(--c-panel)}
+details.card[open]{border-color:var(--c-ink3)}
+details.card>summary{list-style:none;display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:pointer}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary .t{flex:1;min-width:0}
+details.card>summary .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+details.card>summary .t small{color:var(--c-ink3);font-size:12px}
+details.card>summary .chev{width:10px;color:var(--c-ink3);transition:transform .15s}
+details.card[open]>summary .chev{transform:rotate(90deg)}
+details.card .body{padding:4px 12px 10px;border-top:1px solid var(--c-rule)}
+.addrow{display:flex;gap:6px;margin-top:10px}
+.addrow select{flex:1;background:var(--c-field);border:1px solid var(--c-rule);border-radius:5px;padding:6px 8px}
+.status{font-size:12px;color:var(--c-ink2);margin:6px 0}
+.status.err{color:#c43c3c}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
+.chips span{font-size:12px;background:var(--c-field);border:1px solid var(--c-rule);border-radius:10px;padding:1px 8px}
+
+.preview{overflow:auto;padding:22px;position:relative}
+.preview .frame{max-width:1240px;margin:0 auto;border:1px solid var(--c-rule);border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(20,30,40,.06)}
+.mode-build .deck section.sec{cursor:pointer}
+.mode-build .deck section.sec:hover{outline:2px dashed color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:-6px}
+
+/* View mode */
+.mode-view .topbar,.mode-view .editor{display:none}
+.mode-view .workspace{display:block;height:auto}
+.mode-view .preview{padding:0;overflow:visible}
+.mode-view .preview .frame{max-width:none;border:0;border-radius:0;box-shadow:none}
+.viewbar{position:fixed;right:14px;bottom:14px;z-index:30;display:none;gap:4px;padding:5px;border-radius:9px;background:color-mix(in srgb,var(--c-panel) 92%,transparent);border:1px solid var(--c-rule);box-shadow:0 4px 16px rgba(10,20,30,.16);backdrop-filter:blur(6px)}
+.mode-view ~ .viewbar{display:flex}
+.viewbar .btn{border-color:transparent;background:transparent;font-size:13px}
+.viewbar .btn:hover{border-color:var(--c-rule)}
+.viewbar .btn[aria-pressed="true"]{background:var(--c-field);border-color:var(--c-rule)}
+
+dialog{border:1px solid var(--c-rule);border-radius:10px;background:var(--c-panel);color:var(--c-ink);max-width:640px;width:calc(100% - 32px);padding:20px 22px}
+dialog::backdrop{background:rgba(10,16,22,.45)}
+dialog h2{margin:0 0 6px;font-size:19px;font-weight:800;font-stretch:112%}
+dialog h3{margin:18px 0 4px;font-size:15px}
+dialog textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:64px;background:var(--c-field);border:1px solid var(--c-rule);border-radius:5px;padding:6px 8px;word-break:break-all}
+dialog .actions{display:flex;gap:6px;justify-content:flex-end;margin-top:16px}
+dialog .warn{color:var(--c-warn);font-size:13px}
+dialog input[type=url]{width:100%;background:var(--c-field);border:1px solid var(--c-rule);border-radius:5px;padding:6px 8px}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--c-ink);color:var(--c-panel);padding:8px 14px;border-radius:7px;font-size:14px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+.toast.on{opacity:1}
+
+@media (max-width:900px){
+  .workspace{grid-template-columns:1fr;height:auto}
+  .editor{max-height:none;border-right:0;border-bottom:1px solid var(--c-rule)}
+  .preview{padding:10px}
+}
+
+/* ---------- Deck (the pitch itself) ---------- */
+.deck{
+  --bg:#edf0f2; --surface:#ffffff; --ink:#15202b; --ink2:#4a5763; --ink3:#6b7884; --rule:#d2d9de;
+  --good:#0a7d0a; --bad:#c43c3c;
+  --display:"Archivo",system-ui,sans-serif; --text:"Archivo",system-ui,sans-serif; --display-stretch:125%; --display-weight:800;
+  background:var(--bg);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.5;font-stretch:100%;
+  -webkit-font-smoothing:antialiased;
+}
+.deck.scheme-dark{--bg:#0f161c;--surface:#17212a;--ink:#e6ebee;--ink2:#adb8c1;--ink3:#86929c;--rule:#2b3742;--good:#35c235;--bad:#ef6b6b;color-scheme:dark}
+.deck.font-serif{--display:"Source Serif 4",Georgia,serif;--text:"Source Sans 3",system-ui,sans-serif;--display-stretch:100%;--display-weight:700}
+.deck.font-system{--display:system-ui,-apple-system,"Segoe UI",sans-serif;--text:system-ui,-apple-system,"Segoe UI",sans-serif;--display-stretch:100%;--display-weight:750}
+.deck .wrap{max-width:1120px;margin:0 auto;padding:0 40px}
+.deck section.sec{padding:72px 0;border-top:1px solid var(--rule);position:relative}
+.deck section.sec:first-child{border-top:0}
+.deck h2.sh{font-family:var(--display);font-stretch:var(--display-stretch);font-weight:var(--display-weight);font-size:clamp(28px,3.4vw,40px);line-height:1.08;letter-spacing:-.015em;margin:0 0 14px;max-width:22ch}
+.deck .intro{color:var(--ink2);max-width:62ch;margin:0 0 32px;font-size:18px}
+.deck .intro p{margin:0 0 .7em}
+.deck a{color:inherit;text-decoration-color:color-mix(in srgb,var(--accent) 70%,transparent);text-underline-offset:3px}
+.deck .srcline{font-size:13px;color:var(--ink3);margin-top:14px}
+.deck .empty{border:1.5px dashed var(--rule);border-radius:8px;padding:28px;text-align:center;color:var(--ink3);font-size:15px}
+
+/* cover */
+.deck .cover{padding:0;border-top:0;min-height:min(86vh,760px);display:flex;align-items:stretch;background:var(--surface);position:relative;overflow:hidden}
+.deck .cover .bgimg{position:absolute;inset:0;background-size:cover;background-position:center}
+.deck .cover .bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--surface) 30%,color-mix(in srgb,var(--surface) 70%,transparent) 65%,color-mix(in srgb,var(--surface) 20%,transparent))}
+.deck .cover .wrap{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;padding-top:40px;padding-bottom:44px}
+.deck .cover .logo{height:52px;width:auto;max-width:220px;object-fit:contain;align-self:flex-start}
+.deck .cover .bar{height:10px;width:96px;background:var(--accent);align-self:flex-start}
+.deck .cover h1{font-family:var(--display);font-stretch:var(--display-stretch);font-weight:var(--display-weight);font-size:clamp(46px,8.6vw,124px);line-height:.92;letter-spacing:-.03em;margin:48px 0 22px;max-width:11ch;text-wrap:balance}
+.deck .cover .sub{font-size:clamp(18px,1.8vw,23px);color:var(--ink2);max-width:40ch;margin:0 0 32px;line-height:1.4}
+.deck .cover .foot{display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px}
+.deck .cta{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:13px 22px;border-radius:4px;font-size:17px}
+.deck .cta:hover{filter:brightness(1.08)}
+.deck .cta.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink3)}
+.deck .stamp{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2)}
+.deck .stamp .dot{width:9px;height:9px;border-radius:50%;background:var(--ink3);flex:none}
+.deck .stamp.live .dot{background:var(--good);box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 60%,transparent);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 55%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.deck .stamp.live .dot{animation:none}}
+
+/* stats */
+.deck .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:30px 0}
+.deck .tile{padding:2px 24px 0 22px;border-left:1px solid var(--rule)}
+.deck .tile:first-child{border-left-color:var(--accent);border-left-width:3px}
+.deck .tile .lab{font-size:15px;color:var(--ink2);margin-bottom:6px}
+.deck .tile .val{font-family:var(--display);font-stretch:var(--display-stretch);font-weight:var(--display-weight);font-size:clamp(34px,3.6vw,50px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.deck .tile .delta{font-size:14px;margin-top:9px;color:var(--ink2)}
+.deck .tile .delta b{font-weight:700}
+.deck .tile .delta.up b{color:var(--good)}
+.deck .tile .delta.down b{color:var(--bad)}
+.deck .tile .note{font-size:13px;color:var(--ink3);margin-top:6px}
+
+/* charts */
+.deck .chart-wrap{position:relative;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px 18px 10px}
+.deck .chart{width:100%;min-height:60px}
+.deck .chart svg{display:block;width:100%;height:auto;overflow:visible}
+.deck .chart text{fill:var(--ink3);font-size:12px;font-family:var(--text)}
+.deck .chart .lbl-strong{fill:var(--ink);font-weight:600}
+.deck .chart .grid{stroke:var(--rule);stroke-width:1}
+.deck .chart .base{stroke:var(--ink3);stroke-width:1}
+.deck .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--ink2);margin:0 0 10px}
+.deck .legend span{display:flex;align-items:center;gap:7px}
+.deck .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.deck .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);font-size:13px;line-height:1.35;padding:7px 10px;border-radius:5px;white-space:nowrap;opacity:0;transition:opacity .08s;z-index:3}
+.deck .tip.on{opacity:1}
+.deck .tip b{display:block;margin-bottom:2px}
+.deck .tip i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.deck details.datatable{margin-top:8px;font-size:14px}
+.deck details.datatable summary{cursor:pointer;color:var(--ink2);padding:4px 0}
+
+/* tables */
+.deck table.dt{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+.deck table.dt th{text-align:left;font-weight:600;color:var(--ink2);border-bottom:1.5px solid var(--ink3);padding:8px 12px 8px 0}
+.deck table.dt td{border-bottom:1px solid var(--rule);padding:9px 12px 9px 0;vertical-align:top}
+.deck table.dt td.num,.deck table.dt th.num{text-align:right}
+.deck .tscroll{overflow-x:auto}
+
+/* media */
+.deck .media{display:grid;gap:28px}
+.deck .media.grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.deck .media figure{margin:0}
+.deck .media .ratio{position:relative;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden}
+.deck .media .ratio iframe,.deck .media .ratio video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.deck .media img{width:100%;height:auto;display:block;border-radius:6px}
+.deck .media audio{width:100%}
+.deck .media iframe.spot{width:100%;height:152px;border:0;border-radius:12px}
+.deck .media figcaption{font-size:15px;color:var(--ink2);margin-top:9px}
+.deck .media .linkcard{display:block;padding:18px 20px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);text-decoration:none;word-break:break-all}
+.deck .print-link{display:none}
+
+/* text */
+.deck .prose{max-width:66ch;font-size:18px}
+.deck .prose p{margin:0 0 1em}
+.deck .prose ul{margin:0 0 1em;padding-left:1.2em}
+.deck .prose li{margin:.25em 0}
+
+/* packages */
+.deck .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:stretch}
+.deck .tier{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:26px 24px;display:flex;flex-direction:column}
+.deck .tier.feat{border:2px solid var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
+.deck .tier .tn{font-weight:700;font-size:19px}
+.deck .tier .flag{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:6px}
+.deck.scheme-dark .tier .flag{color:color-mix(in srgb,var(--accent) 60%,white)}
+.deck .tier .price{font-family:var(--display);font-stretch:var(--display-stretch);font-weight:var(--display-weight);font-size:38px;line-height:1.05;margin:14px 0 2px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.deck .tier .cad{color:var(--ink3);font-size:14px;margin-bottom:16px}
+.deck .tier ul{list-style:none;padding:0;margin:0 0 10px;flex:1}
+.deck .tier li{padding:7px 0 7px 22px;border-top:1px solid var(--rule);position:relative;font-size:15.5px}
+.deck .tier li::before{content:"";position:absolute;left:2px;top:15px;width:9px;height:5px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+.deck .tier .tnote{font-size:13px;color:var(--ink3)}
+.deck .fine{font-size:14px;color:var(--ink3);margin-top:22px;max-width:70ch}
+
+/* logos */
+.deck .logos{display:flex;flex-wrap:wrap;gap:28px 44px;align-items:center}
+.deck .logos a,.deck .logos span{display:flex;align-items:center;text-decoration:none}
+.deck .logos img{height:44px;width:auto;max-width:180px;object-fit:contain;filter:grayscale(1);opacity:.85}
+.deck .logos a:hover img{filter:none;opacity:1}
+.deck .logos .word{font-family:var(--display);font-stretch:var(--display-stretch);font-weight:700;font-size:22px;color:var(--ink2)}
+
+/* quote */
+.deck .quote{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
+.deck .quote .mark{font-family:var(--display);font-weight:800;font-size:110px;line-height:.75;color:var(--accent)}
+.deck .quote blockquote{margin:0;font-family:var(--display);font-stretch:calc(var(--display-stretch) * .9);font-weight:600;font-size:clamp(24px,2.6vw,34px);line-height:1.25;letter-spacing:-.01em;max-width:34ch}
+.deck .quote .who{display:flex;gap:12px;align-items:center;margin-top:20px;font-size:16px}
+.deck .quote .who img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.deck .quote .who span{color:var(--ink3)}
+
+/* contact */
+.deck .contact{background:var(--accent);color:var(--accent-ink)}
+.deck .contact h2.sh{color:inherit}
+.deck .contact .intro{color:inherit;opacity:.9}
+.deck .contact .cta{background:var(--accent-ink);color:var(--accent)}
+.deck .contact .cta.ghost{background:transparent;color:var(--accent-ink);box-shadow:inset 0 0 0 1.5px currentColor}
+.deck .contact .mail{font-size:clamp(20px,2.4vw,28px);font-weight:700;margin:0 0 26px;display:inline-block}
+.deck .contact .btns{display:flex;flex-wrap:wrap;gap:12px}
+.deck .colophon{padding:26px 0 30px;font-size:13px;color:var(--ink3);border-top:1px solid var(--rule)}
+.deck .colophon p{margin:0 0 .4em;max-width:90ch}
+
+/* slides presentation */
+.deck.slides section.sec{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.deck.slides section.sec>.wrap{width:100%}
+html.slides-on{scroll-snap-type:y proximity}
+html.slides-on .deck section.sec{scroll-snap-align:start}
+
+@media (max-width:700px){
+  .deck{font-size:16px}
+  .deck .wrap{padding:0 20px}
+  .deck section.sec{padding:52px 0}
+  .deck .tile{padding:0 12px 0 14px}
+  .deck .tiles{grid-template-columns:1fr 1fr}
+  .deck .quote{grid-template-columns:1fr;gap:6px}
+  .deck .quote .mark{font-size:70px}
+  .deck .cover h1{margin-top:36px}
+}
+
+@media print{
+  @page{margin:12mm}
+  body{background:#fff}
+  .topbar,.editor,.viewbar,.toast,dialog{display:none!important}
+  .workspace{display:block;height:auto}
+  .preview{padding:0;overflow:visible}
+  .preview .frame{border:0;box-shadow:none;max-width:none}
+  .deck section.sec{break-inside:avoid;padding:36px 0;min-height:0!important}
+  .deck .cover{min-height:0;padding:30px 0}
+  .deck .media .ratio,.deck .media iframe.spot,.deck .media video,.deck .media audio{display:none}
+  .deck .print-link{display:block;font-size:13px;color:var(--ink2);word-break:break-all;padding:10px 0;border-top:1px solid var(--rule)}
+  .deck details.datatable{display:none}
+  .deck .stamp.live .dot{animation:none}
+  .deck{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div id="app" class="mode-build">
+  <header class="topbar">
+    <div class="name">Pitch Deck Builder <small id="saved-state">Saved in this browser</small></div>
+    <button class="btn" id="b-new" type="button">New</button>
+    <button class="btn" id="b-sample" type="button">Load sample</button>
+    <button class="btn" id="b-open" type="button">Open file</button>
+    <button class="btn" id="b-save" type="button">Save file</button>
+    <button class="btn" id="b-export" type="button">Export HTML</button>
+    <button class="btn" id="b-print" type="button">Print / PDF</button>
+    <button class="btn" id="b-share" type="button">Share link</button>
+    <button class="btn primary" id="b-present" type="button">Present</button>
+    <input type="file" id="f-open" accept=".json,application/json" hidden="">
+  </header>
+  <main class="workspace">
+    <aside class="editor" aria-label="Deck editor">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="sections" type="button">Sections</button>
+        <button role="tab" aria-selected="false" data-tab="data" type="button">Data</button>
+        <button role="tab" aria-selected="false" data-tab="deck" type="button">Look and settings</button>
+      </div>
+      <div class="panel" id="p-sections" role="tabpanel"></div>
+      <div class="panel" id="p-data" role="tabpanel" hidden=""></div>
+      <div class="panel" id="p-deck" role="tabpanel" hidden=""></div>
+    </aside>
+    <section class="preview" aria-label="Deck preview">
+      <div class="frame"><div id="deck-root" class="deck"></div></div>
+    </section>
+  </main>
+</div>
+
+<div class="viewbar" role="toolbar" aria-label="Presentation controls">
+  <button class="btn" id="v-slides" type="button" aria-pressed="false" title="One section per screen; use arrow keys">Slides</button>
+  <button class="btn" id="v-refresh" type="button" title="Pull the latest numbers from linked data">Refresh data</button>
+  <button class="btn" id="v-print" type="button">Print</button>
+  <button class="btn" id="v-edit" type="button">Edit</button>
+</div>
+
+<dialog id="share-dlg" aria-labelledby="share-h"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="embedded-deck" type="application/json">{"deck":{"version":1,"starterId":"ryan-mcbeth-2026-10-27","meta":{"title":"Ryan McBeth: sponsor pitch","publisher":"Ryan McBeth Productions, LLC","footer":"Figures come from YouTube Studio, Spotify, and Substack exports, and refresh when new exports are added to the data folder.","showSources":true,"refreshMinutes":0,"allowEdit":false},"theme":{"scheme":"light","accent":"#0e6e7c","font":"archivo"},"sources":[{"id":"yt_daily","name":"YouTube views by day","url":"data/youtube-daily.csv","note":"YouTube Studio","csv":"Date,Views\n2026-09-29,237766\n2026-09-30,229575\n2026-10-01,340778\n2026-10-02,161802\n2026-10-03,158930\n2026-10-04,255747\n2026-10-05,357126\n2026-10-06,333663\n2026-10-07,240615\n2026-10-08,592953\n2026-10-09,678100\n2026-10-10,853515\n2026-10-11,582538\n2026-10-12,624593\n2026-10-13,371381\n2026-10-14,433671\n2026-10-15,515812\n2026-10-16,349738\n2026-10-17,332805\n2026-10-18,275251\n2026-10-19,339146\n2026-10-20,268909\n2026-10-21,502005\n2026-10-22,597013\n2026-10-23,331697\n2026-10-24,269034\n2026-10-25,329339\n2026-10-26,376413\n","fetchedAt":1793152451660},{"id":"yt_videos","name":"YouTube videos","url":"data/youtube-videos.csv","note":"YouTube Studio content report, Sep 29 to Oct 27, 2026","csv":"Content,Video title,Video publish time,Duration,Views,Watch time (hours),Subscribers,Thumbnail impressions,Thumbnail click-through rate (%)\nTotal,,,,10939915,345647.0271,5953,46426220,5.65\nUH36eP4wySA,Nidal Hasan and the Return of the Military Firing Squad,\"Oct 8, 2026\",598,2274282,88026.2133,5070,14776272,4.75\n -JKrmBAxe1Q,Why the Korabelny Bridge Strike Matters to St. Petersburg,\"Oct 21, 2026\",116,353250,5161.5051,59,477002,8.12\nLBNRIv6AgDM,Trump's Russian Diesel Deal: 7 Days of Fuel at What Cost?,\"Oct 10, 2026\",134,322568,4594.4819,47,781360,8.12\nQM8l12Sw4qY,Attacking Russian Datacenters May Matter More than Refineries,\"Oct 15, 2026\",96,312961,3668.1105,44,645960,8.31\npZuGmP73JI4,Does Russia 🇷🇺 have the ability to project power?,\"Oct 22, 2026\",37,291592,1636.6572,22,142317,7.55\nGQdFL1UoIvo,Do we really need 20% fewer Generals? 🤔 #usmilitary #strategy #shorts,\"Oct 1, 2026\",108,284998,3814.837,40,354353,7.68\nDH2iKqEnLzo,Would Buying Russian Diesel Lower U.S.Prices?,\"Oct 12, 2026\",96,273379,3374.4793,40,191869,5.95\ndPMsWnsuMwc,Starlink Access Crippled for Ukraine 🇺🇦,\"Oct 14, 2026\",111,250100,3227.4837,15,495537,8.63\n3CUVuk7AkJQ,Ukraine Hit Yandex. Did Russia’s Bots Go Silent?,\"Oct 12, 2026\",538,249365,11045.5251,166,1154210,7.76\ngyEXxLquSng,Is The Trump-Putin’s Diesel Deal a Trap for Ukraine?,\"Oct 11, 2026\",482,233581,9062.155,100,1132271,6.83\n8Rg7j3HddJo,How Ukraine Used Explosive Decoys to Break Russian Lines,\"Sep 30, 2026\",771,227551,12347.2689,370,1148380,6.53\nhI8yzpLiOzQ,I Don’t Trust Tucker Carlson. I Still Checked the Numbers.,\"Oct 19, 2026\",711,214583,10383.4275,315,1083062,6.57\nkGIFUoScqQU,What Hegseth Got Right—and Where He Lost Me,\"Oct 5, 2026\",1559,191510,19963.6407,23,1142724,5.63\n8ILrgNKD6eo,Can Anduril’s Steelfin Make Air Defense Affordable?,\"Oct 15, 2026\",657,190069,7375.685,131,1029751,5.23\nbXcQJtDzlUM,Can Nations Trust Elon Musk?,\"Oct 21, 2026\",91,189356,2150.4065,13,298958,7.27\neD32iiH8nUg,Trump Waives Russian Sanctions,\"Oct 17, 2026\",107,187942,2114.5934,13,490926,7.96\nBVOEBkQzOTA,Pakistan 🇵🇰 and Turkey 🇹🇷 Enter Yemen 🇾🇪 war on the side of Saudi Arabia 🇸🇦,\"Oct 6, 2026\",70,185311,1537.82,14,369913,8.21\nvLfSmIBsLSM,Russia’s Geran-4: Why Ukraine’s Drone Defenses Have to Change,\"Oct 4, 2026\",905,176685,8534.1932,125,1035402,4.76\ndm31mo9RnXg,Pentagon Bloat: Do We Have Too Many Generals?,\"Oct 3, 2026\",774,176561,8898.1679,277,1167312,4.95\nUuX7AjU1mS4,Iran’s 🇮🇷 Gray Zone Tactics Gets American 🇺🇸 B-1 Bombers to Leave UK 🇬🇧,\"Oct 5, 2026\",111,162062,2054.7699,16,276560,6.91\nKSGttsUjAjc,Russian 🇷🇺 Grey Zone Attack Against Estonian 🇪🇪 Factory,\"Oct 5, 2026\",170,154939,2640.9315,3,397861,7.14\nLoz1cdnIpOM,A No-Fly Zone Over Ukraine? Why I Changed My Mind.,\"Oct 23, 2026\",1225,154057,10987.5926,32,839386,6.4\nXjDSA-s5-Ko,France’s Protests Are About More Than Fuel Prices,\"Oct 21, 2026\",823,140331,9455.3634,41,834999,6.94\n88EzXddPEgY,Houthis Can’t Hide From Drones,\"Oct 22, 2026\",618,139360,6241.0106,42,692407,6.69\nnIAEH_q-eWA,The Truth About Elon Musk and the Ukraine Starlink Timeline,\"Oct 26, 2026\",660,131810,8329.7919,108,616737,8.21\nWx638uWIwPk,Tucker Carlson‘s YouTube Views are Likely Real,\"Oct 19, 2026\",79,128670,1152.7092,5,335353,7.61\nlltMRh-xyYE,Starlink’s Ukraine Dilemma for Europe,\"Oct 15, 2026\",67,127924,908.807,0,255186,7.56\n9MiWDWjGMTo,Yemen 🇾🇪 War Update: Houthis Pushed away from Red Sea,\"Oct 6, 2026\",81,127630,1145.3025,17,316392,7.15\nkJc2JWuxyGM,Are Ukrainian Men Being Dragged into Vans to Serve in the Army?,\"Oct 15, 2026\",85,118502,1228.182,2,225532,7.94\nNd6V51Pa3fA,Why Trump Wants Ukraine to Stop Striking Russia?,\"Sep 29, 2026\",543,116978,6070.5065,179,608135,7.16\n","fetchedAt":1793152451660},{"id":"spotify","name":"Global Warning podcast by day","url":"data/spotify.csv","note":"Spotify","csv":"Date,Plays & downloads,Plays (on Spotify),Downloads (everywhere else),Audience,Audience (on Spotify),Audience (everywhere else)\n9/28/2026,504,287,217,394,207,187\n9/29/2026,181,124,57,130,80,50\n9/30/2026,135,95,40,97,61,36\n10/1/2026,123,61,62,67,41,26\n10/2/2026,72,27,45,55,19,36\n10/3/2026,61,52,9,32,23,9\n10/4/2026,603,162,441,532,106,426\n10/5/2026,523,325,198,391,203,188\n10/6/2026,177,107,70,143,79,64\n10/7/2026,139,83,56,105,53,52\n10/8/2026,71,43,28,61,36,25\n10/9/2026,64,50,14,38,25,13\n10/10/2026,35,23,12,28,18,10\n10/11/2026,709,242,467,604,156,448\n10/12/2026,469,306,163,349,199,150\n10/13/2026,168,104,64,128,72,56\n10/14/2026,90,55,35,73,44,29\n10/15/2026,98,47,51,68,31,37\n10/16/2026,71,45,26,50,30,20\n10/17/2026,71,55,16,36,21,15\n10/18/2026,732,251,481,640,178,462\n10/19/2026,461,306,155,378,238,140\n10/20/2026,163,109,54,127,79,48\n10/21/2026,105,59,46,81,43,38\n10/22/2026,107,51,56,73,37,36\n10/23/2026,59,25,34,40,19,21\n10/24/2026,40,15,25,28,12,16\n10/25/2026,719,202,517,642,159,483\n10/26/2026,435,281,154,339,203,136\n10/27/2026,199,130,69,147,82,65","fetchedAt":1793152451660},{"id":"substack","name":"Substack views by day","url":"data/substack.csv","note":"Substack","csv":"Date,Views\n2026/10/02,37480\n2026/10/03,31700\n2026/10/04,74645\n2026/10/05,70893\n2026/10/06,42066\n2026/10/07,33863\n2026/10/08,40356\n2026/10/09,36083\n2026/10/10,11685\n2026/10/11,51055\n2026/10/12,38205\n2026/10/13,32110\n2026/10/14,55732\n2026/10/15,35975\n2026/10/16,30610\n2026/10/17,33451\n2026/10/18,77015\n2026/10/19,67129\n2026/10/20,43396\n2026/10/21,51710\n2026/10/22,47361\n2026/10/23,35527\n2026/10/24,34382\n2026/10/25,70773\n2026/10/26,34148\n2026/10/27,26735\n","fetchedAt":1793152451660}],"sections":[{"id":"s1","type":"cover","title":"Ryan McBeth","subtitle":"Open-source intelligence and analysis on YouTube, the Global Warning podcast, and Substack.","logo":"","background":"","ctaLabel":"","ctaUrl":"","showStamp":true},{"id":"s2","type":"stats","heading":"One Audience, Three Platforms","intro":"Totals from each platform's latest export, roughly the past four weeks.","tiles":[{"label":"YouTube Views","mode":"data","source":"yt_daily","column":"Views","agg":"sum","format":"compact","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""},{"label":"Substack Post Views","mode":"data","source":"substack","column":"Views","agg":"sum","format":"compact","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""},{"label":"Podcast Plays & Downloads (Spotify)","mode":"data","source":"spotify","column":"Plays & downloads","agg":"sum","format":"number","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""}]},{"id":"s3","type":"chart","heading":"Daily YouTube Views","intro":"Views averaged about 391,000 a day and peaked at 854,000 on October 10, in the days after the Nidal Hasan video went up on October 8.","kind":"line","source":"yt_daily","x":"Date","series":["Views"],"lastN":null,"sort":"none","format":"compact","zero":true,"note":""},{"id":"s4","type":"stats","heading":"YouTube in Detail","intro":"","tiles":[{"label":"Watch hours","mode":"data","source":"yt_videos","column":"Watch time (hours)","agg":"first","format":"compact","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""},{"label":"Subscribers Gained","mode":"data","source":"yt_videos","column":"Subscribers","agg":"first","format":"number","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""},{"label":"Thumbnail Impressions","mode":"data","source":"yt_videos","column":"Thumbnail impressions","agg":"first","format":"compact","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""},{"label":"Thumbnail Click-through Rate","mode":"data","source":"yt_videos","column":"Thumbnail click-through rate (%)","agg":"first","format":"percent","showDelta":false,"deltaRows":1,"deltaLabel":"","note":""}]},{"id":"s5","type":"table","heading":"Most-watched Videos","intro":"New uploads carry the channel: the 68 videos published in this period drew 91 percent of its views. The top video alone drew about a fifth.","source":"yt_videos","columns":["Video title","Video publish time","Views","Watch time (hours)","Subscribers"],"skip":1,"limit":10,"newestFirst":false,"rename":"Video title = Video\nVideo publish time = Published\nWatch time (hours) = Watch hours\nSubscribers = Subscribers gained","note":""},{"id":"s6","type":"media","heading":"Recent Work","intro":"","layout":"grid","items":[{"url":"https://www.youtube.com/watch?v=UH36eP4wySA","caption":"Nidal Hasan and the Return of the Military Firing Squad"},{"url":"https://www.youtube.com/watch?v=8Rg7j3HddJo","caption":"How Ukraine Used Explosive Decoys to Break Russian Lines"}]},{"id":"s7","type":"chart","heading":"Substack Readership","intro":"Posts drew 1.14 million views in 26 days, about 44,000 a day. The biggest days fall on Sundays and Mondays.","kind":"line","source":"substack","x":"Date","series":["Views"],"lastN":null,"sort":"none","format":"compact","zero":true,"note":""},{"id":"s8","type":"chart","heading":"The Global Warning Podcast","intro":"Listening jumps every Sunday and Monday, and splits almost evenly between Spotify and other podcast apps.","kind":"line","source":"spotify","x":"Date","series":["Plays (on Spotify)","Downloads (everywhere else)"],"lastN":null,"sort":"none","format":"number","zero":true,"note":""},{"id":"s10","type":"contact","heading":"Sponsor the channel","body":"Contact Ryan at info@ryanmcbeth.com for more information.","email":"info@ryanmcbeth.com","buttonLabel":"","buttonUrl":"","secondaryLabel":"","secondaryUrl":""}]},"view":true}</script>
+<script id="starter-deck" type="application/json">{"version": 1, "starterId": "ryan-mcbeth-2026-10-27", "meta": {"title": "Ryan McBeth: sponsor pitch", "publisher": "Ryan McBeth Productions, LLC", "footer": "Figures come from YouTube Studio, Spotify, and Substack exports, and refresh when new exports are added to the data folder.", "showSources": true, "refreshMinutes": 0, "allowEdit": false}, "theme": {"scheme": "light", "accent": "#0e6e7c", "font": "archivo"}, "sources": [{"id": "yt_daily", "name": "YouTube views by day", "url": "data/youtube-daily.csv", "note": "YouTube Studio", "csv": "Date,Views\n2026-09-29,237766\n2026-09-30,229575\n2026-10-01,340778\n2026-10-02,161802\n2026-10-03,158930\n2026-10-04,255747\n2026-10-05,357126\n2026-10-06,333663\n2026-10-07,240615\n2026-10-08,592953\n2026-10-09,678100\n2026-10-10,853515\n2026-10-11,582538\n2026-10-12,624593\n2026-10-13,371381\n2026-10-14,433671\n2026-10-15,515812\n2026-10-16,349738\n2026-10-17,332805\n2026-10-18,275251\n2026-10-19,339146\n2026-10-20,268909\n2026-10-21,502005\n2026-10-22,597013\n2026-10-23,331697\n2026-10-24,269034\n2026-10-25,329339\n2026-10-26,376413\n", "fetchedAt": 1793152451660}, {"id": "yt_videos", "name": "YouTube videos", "url": "data/youtube-videos.csv", "note": "YouTube Studio content report, Sep 29 to Oct 27, 2026", "csv": "Content,Video title,Video publish time,Duration,Views,Watch time (hours),Subscribers,Thumbnail impressions,Thumbnail click-through rate (%)\nTotal,,,,10939915,345647.0271,5953,46426220,5.65\nUH36eP4wySA,Nidal Hasan and the Return of the Military Firing Squad,\"Oct 8, 2026\",598,2274282,88026.2133,5070,14776272,4.75\n -JKrmBAxe1Q,Why the Korabelny Bridge Strike Matters to St. Petersburg,\"Oct 21, 2026\",116,353250,5161.5051,59,477002,8.12\nLBNRIv6AgDM,Trump's Russian Diesel Deal: 7 Days of Fuel at What Cost?,\"Oct 10, 2026\",134,322568,4594.4819,47,781360,8.12\nQM8l12Sw4qY,Attacking Russian Datacenters May Matter More than Refineries,\"Oct 15, 2026\",96,312961,3668.1105,44,645960,8.31\npZuGmP73JI4,Does Russia 🇷🇺 have the ability to project power?,\"Oct 22, 2026\",37,291592,1636.6572,22,142317,7.55\nGQdFL1UoIvo,Do we really need 20% fewer Generals? 🤔 #usmilitary #strategy #shorts,\"Oct 1, 2026\",108,284998,3814.837,40,354353,7.68\nDH2iKqEnLzo,Would Buying Russian Diesel Lower U.S.Prices?,\"Oct 12, 2026\",96,273379,3374.4793,40,191869,5.95\ndPMsWnsuMwc,Starlink Access Crippled for Ukraine 🇺🇦,\"Oct 14, 2026\",111,250100,3227.4837,15,495537,8.63\n3CUVuk7AkJQ,Ukraine Hit Yandex. Did Russia’s Bots Go Silent?,\"Oct 12, 2026\",538,249365,11045.5251,166,1154210,7.76\ngyEXxLquSng,Is The Trump-Putin’s Diesel Deal a Trap for Ukraine?,\"Oct 11, 2026\",482,233581,9062.155,100,1132271,6.83\n8Rg7j3HddJo,How Ukraine Used Explosive Decoys to Break Russian Lines,\"Sep 30, 2026\",771,227551,12347.2689,370,1148380,6.53\nhI8yzpLiOzQ,I Don’t Trust Tucker Carlson. I Still Checked the Numbers.,\"Oct 19, 2026\",711,214583,10383.4275,315,1083062,6.57\nkGIFUoScqQU,What Hegseth Got Right—and Where He Lost Me,\"Oct 5, 2026\",1559,191510,19963.6407,23,1142724,5.63\n8ILrgNKD6eo,Can Anduril’s Steelfin Make Air Defense Affordable?,\"Oct 15, 2026\",657,190069,7375.685,131,1029751,5.23\nbXcQJtDzlUM,Can Nations Trust Elon Musk?,\"Oct 21, 2026\",91,189356,2150.4065,13,298958,7.27\neD32iiH8nUg,Trump Waives Russian Sanctions,\"Oct 17, 2026\",107,187942,2114.5934,13,490926,7.96\nBVOEBkQzOTA,Pakistan 🇵🇰 and Turkey 🇹🇷 Enter Yemen 🇾🇪 war on the side of Saudi Arabia 🇸🇦,\"Oct 6, 2026\",70,185311,1537.82,14,369913,8.21\nvLfSmIBsLSM,Russia’s Geran-4: Why Ukraine’s Drone Defenses Have to Change,\"Oct 4, 2026\",905,176685,8534.1932,125,1035402,4.76\ndm31mo9RnXg,Pentagon Bloat: Do We Have Too Many Generals?,\"Oct 3, 2026\",774,176561,8898.1679,277,1167312,4.95\nUuX7AjU1mS4,Iran’s 🇮🇷 Gray Zone Tactics Gets American 🇺🇸 B-1 Bombers to Leave UK 🇬🇧,\"Oct 5, 2026\",111,162062,2054.7699,16,276560,6.91\nKSGttsUjAjc,Russian 🇷🇺 Grey Zone Attack Against Estonian 🇪🇪 Factory,\"Oct 5, 2026\",170,154939,2640.9315,3,397861,7.14\nLoz1cdnIpOM,A No-Fly Zone Over Ukraine? Why I Changed My Mind.,\"Oct 23, 2026\",1225,154057,10987.5926,32,839386,6.4\nXjDSA-s5-Ko,France’s Protests Are About More Than Fuel Prices,\"Oct 21, 2026\",823,140331,9455.3634,41,834999,6.94\n88EzXddPEgY,Houthis Can’t Hide From Drones,\"Oct 22, 2026\",618,139360,6241.0106,42,692407,6.69\nnIAEH_q-eWA,The Truth About Elon Musk and the Ukraine Starlink Timeline,\"Oct 26, 2026\",660,131810,8329.7919,108,616737,8.21\nWx638uWIwPk,Tucker Carlson‘s YouTube Views are Likely Real,\"Oct 19, 2026\",79,128670,1152.7092,5,335353,7.61\nlltMRh-xyYE,Starlink’s Ukraine Dilemma for Europe,\"Oct 15, 2026\",67,127924,908.807,0,255186,7.56\n9MiWDWjGMTo,Yemen 🇾🇪 War Update: Houthis Pushed away from Red Sea,\"Oct 6, 2026\",81,127630,1145.3025,17,316392,7.15\nkJc2JWuxyGM,Are Ukrainian Men Being Dragged into Vans to Serve in the Army?,\"Oct 15, 2026\",85,118502,1228.182,2,225532,7.94\nNd6V51Pa3fA,Why Trump Wants Ukraine to Stop Striking Russia?,\"Sep 29, 2026\",543,116978,6070.5065,179,608135,7.16\n", "fetchedAt": 1793152451660}, {"id": "spotify", "name": "Global Warning podcast by day", "url": "data/spotify.csv", "note": "Spotify", "csv": "Date,Plays & downloads,Plays (on Spotify),Downloads (everywhere else),Audience,Audience (on Spotify),Audience (everywhere else)\n9/28/2026,504,287,217,394,207,187\n9/29/2026,181,124,57,130,80,50\n9/30/2026,135,95,40,97,61,36\n10/1/2026,123,61,62,67,41,26\n10/2/2026,72,27,45,55,19,36\n10/3/2026,61,52,9,32,23,9\n10/4/2026,603,162,441,532,106,426\n10/5/2026,523,325,198,391,203,188\n10/6/2026,177,107,70,143,79,64\n10/7/2026,139,83,56,105,53,52\n10/8/2026,71,43,28,61,36,25\n10/9/2026,64,50,14,38,25,13\n10/10/2026,35,23,12,28,18,10\n10/11/2026,709,242,467,604,156,448\n10/12/2026,469,306,163,349,199,150\n10/13/2026,168,104,64,128,72,56\n10/14/2026,90,55,35,73,44,29\n10/15/2026,98,47,51,68,31,37\n10/16/2026,71,45,26,50,30,20\n10/17/2026,71,55,16,36,21,15\n10/18/2026,732,251,481,640,178,462\n10/19/2026,461,306,155,378,238,140\n10/20/2026,163,109,54,127,79,48\n10/21/2026,105,59,46,81,43,38\n10/22/2026,107,51,56,73,37,36\n10/23/2026,59,25,34,40,19,21\n10/24/2026,40,15,25,28,12,16\n10/25/2026,719,202,517,642,159,483\n10/26/2026,435,281,154,339,203,136\n10/27/2026,199,130,69,147,82,65", "fetchedAt": 1793152451660}, {"id": "substack", "name": "Substack views by day", "url": "data/substack.csv", "note": "Substack", "csv": "Date,Views\n2026/10/02,37480\n2026/10/03,31700\n2026/10/04,74645\n2026/10/05,70893\n2026/10/06,42066\n2026/10/07,33863\n2026/10/08,40356\n2026/10/09,36083\n2026/10/10,11685\n2026/10/11,51055\n2026/10/12,38205\n2026/10/13,32110\n2026/10/14,55732\n2026/10/15,35975\n2026/10/16,30610\n2026/10/17,33451\n2026/10/18,77015\n2026/10/19,67129\n2026/10/20,43396\n2026/10/21,51710\n2026/10/22,47361\n2026/10/23,35527\n2026/10/24,34382\n2026/10/25,70773\n2026/10/26,34148\n2026/10/27,26735\n", "fetchedAt": 1793152451660}], "sections": [{"id": "s1", "type": "cover", "title": "Ryan McBeth", "subtitle": "Military and geopolitical analysis on YouTube, the Global Warning podcast, and Substack.", "logo": "", "background": "", "ctaLabel": "Book a sponsorship", "ctaUrl": "#contact", "showStamp": true}, {"id": "s2", "type": "stats", "heading": "One audience, three platforms", "intro": "Totals from each platform's latest export, roughly the past four weeks.", "tiles": [{"label": "YouTube views", "mode": "data", "source": "yt_daily", "column": "Views", "agg": "sum", "format": "compact", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}, {"label": "Substack post views", "mode": "data", "source": "substack", "column": "Views", "agg": "sum", "format": "compact", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}, {"label": "Podcast plays and downloads", "mode": "data", "source": "spotify", "column": "Plays & downloads", "agg": "sum", "format": "number", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}]}, {"id": "s3", "type": "chart", "heading": "Daily YouTube views", "intro": "Views averaged about 391,000 a day and peaked at 854,000 on October 10, in the days after the Nidal Hasan video went up on October 8.", "kind": "line", "source": "yt_daily", "x": "Date", "series": ["Views"], "lastN": null, "sort": "none", "format": "compact", "zero": true, "note": ""}, {"id": "s4", "type": "stats", "heading": "YouTube in detail", "intro": "", "tiles": [{"label": "Watch hours", "mode": "data", "source": "yt_videos", "column": "Watch time (hours)", "agg": "first", "format": "compact", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}, {"label": "Subscribers gained", "mode": "data", "source": "yt_videos", "column": "Subscribers", "agg": "first", "format": "number", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}, {"label": "Thumbnail impressions", "mode": "data", "source": "yt_videos", "column": "Thumbnail impressions", "agg": "first", "format": "compact", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}, {"label": "Thumbnail click-through rate", "mode": "data", "source": "yt_videos", "column": "Thumbnail click-through rate (%)", "agg": "first", "format": "percent", "showDelta": false, "deltaRows": 1, "deltaLabel": "", "note": ""}]}, {"id": "s5", "type": "table", "heading": "Most-watched videos", "intro": "New uploads carry the channel: the 68 videos published in this period drew 91 percent of its views. The top video alone drew about a fifth.", "source": "yt_videos", "columns": ["Video title", "Video publish time", "Views", "Watch time (hours)", "Subscribers"], "skip": 1, "limit": 10, "newestFirst": false, "rename": "Video title = Video\nVideo publish time = Published\nWatch time (hours) = Watch hours\nSubscribers = Subscribers gained", "note": ""}, {"id": "s6", "type": "media", "heading": "Recent work", "intro": "", "layout": "grid", "items": [{"url": "https://www.youtube.com/watch?v=UH36eP4wySA", "caption": "Nidal Hasan and the Return of the Military Firing Squad"}, {"url": "https://www.youtube.com/watch?v=8Rg7j3HddJo", "caption": "How Ukraine Used Explosive Decoys to Break Russian Lines"}]}, {"id": "s7", "type": "chart", "heading": "Substack readership", "intro": "Posts drew 1.14 million views in 26 days, about 44,000 a day. The biggest days fall on Sundays and Mondays.", "kind": "line", "source": "substack", "x": "Date", "series": ["Views"], "lastN": null, "sort": "none", "format": "compact", "zero": true, "note": ""}, {"id": "s8", "type": "chart", "heading": "The Global Warning podcast", "intro": "Listening jumps every Sunday and Monday, and splits almost evenly between Spotify and other podcast apps.", "kind": "line", "source": "spotify", "x": "Date", "series": ["Plays (on Spotify)", "Downloads (everywhere else)"], "lastN": null, "sort": "none", "format": "number", "zero": true, "note": ""}, {"id": "s9", "type": "packages", "heading": "Ways to work together", "intro": "", "tiers": [{"name": "YouTube integration", "price": "[Price]", "cadence": "per video", "featured": false, "deliverables": "[What is included, one item per line]", "note": ""}, {"name": "Cross-platform bundle", "price": "[Price]", "cadence": "[Price note]", "featured": true, "deliverables": "[What is included, one item per line]", "note": "[Optional highlight line]"}, {"name": "Podcast and Substack", "price": "[Price]", "cadence": "per episode or post", "featured": false, "deliverables": "[What is included, one item per line]", "note": ""}], "fineprint": ""}, {"id": "s10", "type": "contact", "heading": "Sponsor the channel", "body": "[Who to contact, and how quickly you reply.]", "email": "", "buttonLabel": "Email us", "buttonUrl": "", "secondaryLabel": "", "secondaryUrl": ""}]}</script>
+<script>
+"use strict";
+const PRISTINE = '<!doctype html>\n' + document.documentElement.outerHTML;
+
+/* ================= Utilities ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const uid = (p = 'x') => p + Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), ms); }
+function debounce(fn, ms){ let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function safeHref(u){
+  u = String(u ?? '').trim(); if (!u) return '';
+  if (/^(https?:|mailto:|tel:|#|\/|\.\/|\.\.\/)/i.test(u)) return u;
+  if (/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u)) return 'https://' + u;
+  return '';
+}
+function safeSrc(u){
+  u = String(u ?? '').trim(); if (!u) return '';
+  if (/^data:(image|video|audio)\//i.test(u)) return u;
+  if (/^(https?:|\/|\.\/|\.\.\/)/i.test(u)) return u;
+  if (/^[\w./-]+\.(png|jpe?g|gif|webp|svg|avif|mp4|webm|mov|m4v|mp3|m4a|wav|ogg)$/i.test(u)) return u;
+  return '';
+}
+function slug(s){ return String(s || 'pitch').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'pitch'; }
+function fmtDate(ts){ if (!ts) return ''; const d = new Date(ts); if (isNaN(d)) return ''; return d.toLocaleString(undefined, {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'}); }
+function download(name, text, type){ const b = new Blob([text], {type}); const a = el('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+
+/* ================= CSV ================= */
+function parseCSV(text){
+  text = String(text ?? '').replace(/^﻿/, '');
+  const rows = []; let row = [], f = '', q = false, i = 0;
+  const delim = (text.split('\n')[0].split('\t').length > text.split('\n')[0].split(',').length) ? '\t' : ',';
+  while (i < text.length){
+    const c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if (c === '"') q = true;
+    else if (c === delim){ row.push(f); f = ''; }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += c;
+    i++;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  const clean = rows.filter(r => r.some(v => v.trim() !== ''));
+  if (!clean.length) return {cols: [], rows: []};
+  const cols = clean[0].map((h, j) => h.trim() || ('column_' + (j + 1)));
+  const out = clean.slice(1).map(r => { const o = {}; cols.forEach((c, j) => o[c] = (r[j] ?? '').trim()); return o; });
+  return {cols, rows: out};
+}
+function toNum(v){
+  if (typeof v === 'number') return isFinite(v) ? v : null;
+  if (v == null) return null;
+  let s = String(v).trim(); if (!s) return null;
+  let mult = 1; const m = s.match(/([kmb])$/i);
+  if (m && /\d/.test(s)) { mult = {k:1e3, m:1e6, b:1e9}[m[1].toLowerCase()]; s = s.slice(0, -1); }
+  s = s.replace(/[$€£,%\s]/g, '');
+  if (/^\(.*\)$/.test(s)) s = '-' + s.slice(1, -1);
+  const n = parseFloat(s);
+  return isNaN(n) || !/^-?[\d.]+(e-?\d+)?$/i.test(s) ? null : n * mult;
+}
+
+/* ================= Formatting ================= */
+const FORMATS = [['number','Number (1,234,567)'],['compact','Compact (1.2M)'],['percent','Percent (42%)'],['currency','Dollars ($1,234)'],['currency-compact','Dollars compact ($1.2M)'],['minutes','Minutes as m:ss'],['raw','As written in the data']];
+function fmtVal(n, format = 'number', decimals){
+  if (n == null || n === '') return '—';
+  if (format === 'raw') return String(n);
+  const v = toNum(n); if (v == null) return String(n);
+  const d = (decimals == null || decimals === '') ? null : +decimals;
+  switch (format){
+    case 'compact': return new Intl.NumberFormat('en-US', {notation:'compact', maximumFractionDigits: d ?? (Math.abs(v) >= 1e3 ? 1 : 0)}).format(v);
+    case 'percent': return new Intl.NumberFormat('en-US', {maximumFractionDigits: d ?? (Math.abs(v) < 10 ? 2 : 1)}).format(v) + '%';
+    case 'currency': return new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', maximumFractionDigits: d ?? 0}).format(v);
+    case 'currency-compact': return new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', notation:'compact', maximumFractionDigits: d ?? 1}).format(v);
+    case 'minutes': { const tot = Math.round(v * 60); const m = Math.floor(tot / 60), s = tot % 60; return m + ':' + String(s).padStart(2, '0'); }
+    default: return new Intl.NumberFormat('en-US', {maximumFractionDigits: d ?? (Math.abs(v) < 100 ? 2 : 0)}).format(v);
+  }
+}
+function axisFmt(v, format){
+  if (format === 'percent') return fmtVal(v, 'percent', 0);
+  if (format === 'minutes') return fmtVal(v, 'minutes');
+  if (format === 'currency' || format === 'currency-compact') return fmtVal(v, 'currency-compact');
+  return Math.abs(v) >= 1000 ? fmtVal(v, 'compact') : fmtVal(v, 'number');
+}
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// Reads the date styles common in platform exports: 2026-10-02, 2026/10/02, 10/2/2026, 2026-10 (month)
+function parseDate(s){
+  s = String(s ?? '').trim(); let m;
+  if ((m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/))) return { y: +m[1], mo: +m[2], d: +m[3] };
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/))) return { y: +m[3], mo: +m[1], d: +m[2] };
+  if ((m = s.match(/^(\d{4})-(\d{1,2})$/))) return { y: +m[1], mo: +m[2], d: null };
+  return null;
+}
+function prettyLabel(s){
+  const p = parseDate(s); if (!p || p.mo < 1 || p.mo > 12) return String(s ?? '');
+  return p.d == null ? MON[p.mo-1] + ' ' + p.y : MON[p.mo-1] + ' ' + p.d + ', ' + p.y;
+}
+function shortLabel(s){
+  const p = parseDate(s);
+  if (p && p.mo >= 1 && p.mo <= 12) return p.d == null ? MON[p.mo-1] + ' ’' + String(p.y).slice(2) : MON[p.mo-1] + ' ' + p.d;
+  s = String(s ?? ''); return s.length > 14 ? s.slice(0, 13) + '…' : s;
+}
+function dateSpan(d){
+  if (!d || !d.cols || !d.rows || d.rows.length < 2) return '';
+  const col = d.cols.find(c => parseDate(d.rows[0][c]) && parseDate(d.rows[d.rows.length - 1][c]));
+  if (!col) return '';
+  const a = parseDate(d.rows[0][col]), b = parseDate(d.rows[d.rows.length - 1][col]);
+  if (a.d == null) return prettyLabel(d.rows[0][col]) + ' to ' + prettyLabel(d.rows[d.rows.length - 1][col]);
+  const fa = a.y === b.y ? MON[a.mo-1] + ' ' + a.d : MON[a.mo-1] + ' ' + a.d + ', ' + a.y;
+  return fa + ' to ' + MON[b.mo-1] + ' ' + b.d + ', ' + b.y;
+}
+function md(text){
+  const lines = esc(text).split(/\r?\n/); let html = '', para = [], list = [];
+  const inline = s => s
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => { const h = safeHref(u.replace(/&amp;/g,'&')); return h ? '<a href="' + esc(h) + '" target="_blank" rel="noopener">' + t + '</a>' : t; })
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
+  const flushP = () => { if (para.length){ html += '<p>' + inline(para.join(' ')) + '</p>'; para = []; } };
+  const flushL = () => { if (list.length){ html += '<ul>' + list.map(li => '<li>' + inline(li) + '</li>').join('') + '</ul>'; list = []; } };
+  for (const ln of lines){
+    const m = ln.match(/^\s*[-*•]\s+(.*)/);
+    if (m){ flushP(); list.push(m[1]); }
+    else if (!ln.trim()){ flushP(); flushL(); }
+    else { flushL(); para.push(ln.trim()); }
+  }
+  flushP(); flushL(); return html;
+}
+
+/* ================= Compression for share links ================= */
+function b64u(bytes){ let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64u(s){ s = s.replace(/-/g,'+').replace(/_/g,'/'); while (s.length % 4) s += '='; const bin = atob(s); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+async function pack(obj){
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  if ('CompressionStream' in window){
+    try { const buf = await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer(); return 'z' + b64u(new Uint8Array(buf)); } catch(e){}
+  }
+  return 'j' + b64u(bytes);
+}
+async function unpack(str){
+  const kind = str[0], bytes = unb64u(str.slice(1));
+  let text;
+  if (kind === 'z'){ const buf = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer(); text = new TextDecoder().decode(buf); }
+  else text = new TextDecoder().decode(bytes);
+  return JSON.parse(text);
+}
+
+/* ================= Model ================= */
+const PALETTE = {
+  light: ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#6250d6','#e34948'],
+  dark:  ['#3987e5','#d95926','#199e70','#c98500','#d55181','#008300','#9085e9','#e66767']
+};
+const AGGS = [['last','Latest row'],['first','First row'],['sum','Total (sum)'],['avg','Average'],['max','Highest'],['min','Lowest'],['count','Count of rows']];
+
+const SCHEMA = {
+  cover: { label: 'Cover', make: () => ({ title: 'Your channel name', subtitle: 'One sentence on who you reach and why they trust you.', logo: '', background: '', ctaLabel: 'Book a sponsorship', ctaUrl: '#contact', showStamp: true }),
+    fields: [
+      {key:'title', type:'text', label:'Channel or show name'},
+      {key:'subtitle', type:'textarea', label:'One-line pitch'},
+      {key:'logo', type:'image', label:'Logo', help:'Paste an image link or upload a file.'},
+      {key:'background', type:'image', label:'Background image (optional)'},
+      {key:'ctaLabel', type:'text', label:'Button text'},
+      {key:'ctaUrl', type:'url', label:'Button link', help:'Use #contact to jump to your contact section.'},
+      {key:'showStamp', type:'checkbox', label:'Show when the numbers were last updated'}
+    ]},
+  stats: { label: 'Key numbers', make: () => ({ heading: 'The numbers', intro: '', tiles: [ makeTile() ] }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Intro (optional)'},
+      {key:'tiles', type:'items', label:'Numbers', addLabel:'Add a number', make: () => makeTile(), itemLabel: t => t.label || 'Number', fields: [
+        {key:'label', type:'text', label:'Label'},
+        {key:'mode', type:'select', label:'Value comes from', options:[['data','A data source (stays current)'],['manual','Typed in here']], restructure:true},
+        {key:'value', type:'text', label:'Value', showIf: t => t.mode === 'manual'},
+        {key:'source', type:'source', label:'Data source', restructure:true, showIf: t => t.mode !== 'manual'},
+        {key:'column', type:'column', label:'Column', showIf: t => t.mode !== 'manual'},
+        {key:'agg', type:'select', label:'Use', options: AGGS, restructure:true, showIf: t => t.mode !== 'manual'},
+        {key:'format', type:'select', label:'Show as', options: FORMATS, showIf: t => t.mode !== 'manual'},
+        {key:'showDelta', type:'checkbox', label:'Show change from an earlier row', restructure:true, showIf: t => t.mode !== 'manual' && (t.agg || 'last') === 'last'},
+        {key:'deltaRows', type:'number', label:'Rows back to compare', help:'1 = previous row. With monthly data, 12 = same month last year.', showIf: t => t.mode !== 'manual' && t.showDelta && (t.agg || 'last') === 'last'},
+        {key:'deltaLabel', type:'text', label:'Change label', help:'For example: vs last month', showIf: t => t.mode !== 'manual' && t.showDelta && (t.agg || 'last') === 'last'},
+        {key:'note', type:'text', label:'Small print (optional)', help:'Shown under the number. Data source credits appear once under the whole row.'}
+      ]}
+    ]},
+  chart: { label: 'Chart', make: () => ({ heading: 'Growth', intro: '', kind: 'line', source: firstSourceId(), x: '', series: [], lastN: null, sort: 'none', format: 'compact', zero: true, note: '' }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Takeaway (optional)', help:'Say what the chart shows in a sentence.'},
+      {key:'kind', type:'select', label:'Chart type', options:[['line','Line (change over time)'],['bar','Columns (compare periods)'],['hbar','Bars (compare categories)']], restructure:true},
+      {key:'source', type:'source', label:'Data source', restructure:true},
+      {key:'x', type:'column', label:'Labels column', help:'Dates or category names.'},
+      {key:'series', type:'columns', label:'Value columns', help:'Pick one or more. More than one adds a legend.'},
+      {key:'lastN', type:'number', label:'Only the latest rows (optional)', help:'For example 12 for the last year of monthly data.'},
+      {key:'sort', type:'select', label:'Sort bars', options:[['none','Data order'],['desc','Largest first'],['asc','Smallest first']], showIf: s => s.kind === 'hbar'},
+      {key:'format', type:'select', label:'Show values as', options: FORMATS.filter(f => f[0] !== 'raw')},
+      {key:'zero', type:'checkbox', label:'Start the axis at zero', showIf: s => s.kind === 'line'},
+      {key:'note', type:'text', label:'Source credit (optional)', help:'Leave empty to use the data source credit.'}
+    ]},
+  table: { label: 'Table', make: () => ({ heading: 'Recent results', intro: '', source: firstSourceId(), columns: [], limit: 8, newestFirst: true, note: '' }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Intro (optional)'},
+      {key:'source', type:'source', label:'Data source', restructure:true},
+      {key:'columns', type:'columns', label:'Columns to show', help:'Leave all unchecked to show every column.'},
+      {key:'skip', type:'number', label:'Skip rows at the top (optional)', help:'For example 1 to hide a "Total" row that an export puts first.'},
+      {key:'limit', type:'number', label:'Rows to show'},
+      {key:'newestFirst', type:'checkbox', label:'Newest (last) rows first'},
+      {key:'rename', type:'textarea', label:'Rename column headings (optional)', help:'One per line, like: Video publish time = Published'},
+      {key:'note', type:'text', label:'Source credit (optional)'}
+    ]},
+  media: { label: 'Media', make: () => ({ heading: 'Watch the work', intro: '', layout: 'grid', items: [ {url:'', caption:''} ] }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Intro (optional)'},
+      {key:'layout', type:'select', label:'Layout', options:[['grid','Side by side'],['single','One per row']]},
+      {key:'items', type:'items', label:'Media', addLabel:'Add media', make: () => ({url:'', caption:''}), itemLabel: m => m.caption || mediaKind(m.url) || 'Media', fields: [
+        {key:'url', type:'image', label:'Link or file', accept:'image/*,video/*,audio/*', help:'YouTube, Vimeo, Spotify, a video or audio file link, or an image.'},
+        {key:'caption', type:'text', label:'Caption'}
+      ]}
+    ]},
+  text: { label: 'Text', make: () => ({ heading: 'Who watches', body: 'Write a short paragraph.\n\n- Use dashes for a list\n- **Bold** and *italic* work, and [links](https://example.com)' }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'body', type:'textarea', label:'Text', rows: 8, help:'Blank line = new paragraph. Start lines with "- " for a list.'}
+    ]},
+  packages: { label: 'Sponsorship packages', make: () => ({ heading: 'Ways to work together', intro: '', tiers: [ makeTier('Integration', '$0', 'per video', false) ], fineprint: '' }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Intro (optional)'},
+      {key:'tiers', type:'items', label:'Packages', addLabel:'Add a package', make: () => makeTier('New package', '', '', false), itemLabel: t => t.name || 'Package', fields: [
+        {key:'name', type:'text', label:'Name'},
+        {key:'price', type:'text', label:'Price', help:'Text as you want it shown, e.g. $4,500 or From $3k.'},
+        {key:'cadence', type:'text', label:'Price note', help:'For example: per video, per month.'},
+        {key:'featured', type:'checkbox', label:'Highlight this package'},
+        {key:'deliverables', type:'textarea', label:'What is included', help:'One item per line.'},
+        {key:'note', type:'text', label:'Small print (optional)'}
+      ]},
+      {key:'fineprint', type:'textarea', label:'Terms under the packages (optional)'}
+    ]},
+  logos: { label: 'Past partners', make: () => ({ heading: 'Brands we have worked with', intro: '', items: [ {name:'', image:'', link:''} ] }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'intro', type:'textarea', label:'Intro (optional)'},
+      {key:'items', type:'items', label:'Partners', addLabel:'Add a partner', make: () => ({name:'', image:'', link:''}), itemLabel: l => l.name || 'Partner', fields: [
+        {key:'name', type:'text', label:'Name', help:'Shown as text when there is no logo image.'},
+        {key:'image', type:'image', label:'Logo image (optional)'},
+        {key:'link', type:'url', label:'Link (optional)'}
+      ]}
+    ]},
+  quote: { label: 'Quote', make: () => ({ quote: '', name: '', role: '', image: '' }),
+    fields: [
+      {key:'quote', type:'textarea', label:'Quote', help:'Use a real quote you have permission to share.'},
+      {key:'name', type:'text', label:'Name'},
+      {key:'role', type:'text', label:'Role and company'},
+      {key:'image', type:'image', label:'Photo (optional)'}
+    ]},
+  contact: { label: 'Contact', make: () => ({ heading: 'Let’s talk', body: '', email: '', buttonLabel: 'Email us', buttonUrl: '', secondaryLabel: '', secondaryUrl: '' }),
+    fields: [
+      {key:'heading', type:'text', label:'Heading'},
+      {key:'body', type:'textarea', label:'Text'},
+      {key:'email', type:'text', label:'Email address'},
+      {key:'buttonLabel', type:'text', label:'Main button text'},
+      {key:'buttonUrl', type:'url', label:'Main button link', help:'Leave empty to open an email to the address above.'},
+      {key:'secondaryLabel', type:'text', label:'Second button text (optional)'},
+      {key:'secondaryUrl', type:'url', label:'Second button link', help:'For example a booking calendar or a PDF media kit.'}
+    ]}
+};
+function makeTile(){ return { label: 'Monthly views', mode: 'data', value: '', source: firstSourceId(), column: '', agg: 'last', format: 'compact', showDelta: true, deltaRows: 1, deltaLabel: 'vs previous month', note: '' }; }
+function makeTier(name, price, cadence, featured){ return { name, price, cadence, featured, deliverables: '', note: '' }; }
+function firstSourceId(){ return (state.deck && state.deck.sources[0]) ? state.deck.sources[0].id : ''; }
+
+const META_FIELDS = [
+  {key:'title', type:'text', label:'Page title', help:'Shown in the browser tab and used for file names.'},
+  {key:'publisher', type:'text', label:'Publisher (optional)', help:'Shown in the footer.'},
+  {key:'footer', type:'textarea', label:'Footer text (optional)', help:'Copyright, disclosures, or a colophon.'},
+  {key:'showSources', type:'checkbox', label:'Show source credits under numbers and charts'},
+  {key:'refreshMinutes', type:'number', label:'Auto-refresh linked data every N minutes', help:'0 = only when the page opens. Applies when presenting or viewing a shared link.'},
+  {key:'allowEdit', type:'checkbox', label:'Show an Edit button to people viewing the link'}
+];
+const THEME_FIELDS = [
+  {key:'scheme', type:'select', label:'Background', options:[['light','Light'],['dark','Dark']]},
+  {key:'accent', type:'color', label:'Brand color'},
+  {key:'font', type:'select', label:'Type style', options:[['archivo','Wide sans (Archivo)'],['serif','Serif headings (Source Serif)'],['system','Device default']]}
+];
+
+function blankDeck(){
+  const d = { version: 1,
+    meta: { title: 'Sponsor pitch', publisher: '', footer: '', showSources: true, refreshMinutes: 0, allowEdit: true },
+    theme: { scheme: 'light', accent: '#0e6e7c', font: 'archivo' },
+    sources: [], sections: [] };
+  return d;
+}
+function sampleDeck(){
+  const months = ['2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10'];
+  const views = [1420000,1510000,1380000,1660000,1740000,1920000,2050000,1980000,2310000,2480000,2620000,2870000];
+  const subs = [186400,194200,199800,208900,217300,228600,239900,248100,261700,276400,289900,305200];
+  const avg = [8.4,8.6,8.3,8.9,9.0,9.1,9.3,9.2,9.4,9.5,9.4,9.6];
+  const news = [21300,22100,23400,24800,26100,27900,29400,31200,33500,35100,37400,39800];
+  const monthly = 'month,views,subscribers,watch_hours,avg_view_minutes,newsletter_subscribers\n' + months.map((m, i) => [m, views[i], subs[i], Math.round(views[i] * avg[i] / 60), avg[i], news[i]].join(',')).join('\n');
+  const geo = 'country,share_of_views\nUnited States,41.2\nUnited Kingdom,9.8\nCanada,7.1\nGermany,5.4\nAustralia,4.6\nPoland,3.9\nNetherlands,2.7\nOther,25.3';
+  const age = 'age,share_of_views\n18-24,11.4\n25-34,27.9\n35-44,26.3\n45-54,18.2\n55-64,10.6\n65+,5.6';
+  const integ = 'video,published,views,link_clicks\n"Why drones changed the front line",2026-05-14,612400,14820\n"Undersea cables: the quiet front",2026-06-21,544900,12310\n"The logistics of a Taiwan Strait crisis",2026-08-02,731800,18960\n"What an artillery shell really costs",2026-09-10,689300,16440\n"Reading satellite imagery like an analyst",2026-10-08,802700,21730';
+  const now = Date.now();
+  const d = blankDeck();
+  d.meta.title = 'The Briefing Room: sponsor pitch';
+  d.meta.publisher = '[Publisher name]';
+  d.meta.footer = 'Sample data for demonstration only. Replace every number with your own before sharing.';
+  d.sources = [
+    { id: 'src_monthly', name: 'Channel by month', url: '', note: 'Sample data (replace with your YouTube Studio export)', csv: monthly, fetchedAt: now },
+    { id: 'src_geo', name: 'Audience by country', url: '', note: 'Sample data', csv: geo, fetchedAt: now },
+    { id: 'src_age', name: 'Audience by age', url: '', note: 'Sample data', csv: age, fetchedAt: now },
+    { id: 'src_int', name: 'Past sponsor integrations', url: '', note: 'Sample data', csv: integ, fetchedAt: now }
+  ];
+  d.sections = [
+    { id: uid('s'), type: 'cover', title: 'The Briefing Room', subtitle: 'Independent analysis of war, strategy, and geopolitics for an audience that reads the footnotes.', logo: '', background: '', ctaLabel: 'Book a sponsorship', ctaUrl: '#contact', showStamp: true },
+    { id: uid('s'), type: 'stats', heading: 'Reach that keeps compounding', intro: 'Every figure below is pulled from the linked data, so this page is current whenever you open it.', tiles: [
+      { label: 'Views last month', mode: 'data', source: 'src_monthly', column: 'views', agg: 'last', format: 'compact', showDelta: true, deltaRows: 1, deltaLabel: 'vs previous month', note: '' },
+      { label: 'Subscribers', mode: 'data', source: 'src_monthly', column: 'subscribers', agg: 'last', format: 'compact', showDelta: true, deltaRows: 11, deltaLabel: 'over 11 months', note: '' },
+      { label: 'Watch hours, past 12 months', mode: 'data', source: 'src_monthly', column: 'watch_hours', agg: 'sum', format: 'compact', showDelta: false, deltaRows: 1, deltaLabel: '', note: '' },
+      { label: 'Average view duration', mode: 'data', source: 'src_monthly', column: 'avg_view_minutes', agg: 'last', format: 'minutes', showDelta: false, deltaRows: 1, deltaLabel: '', note: '' },
+      { label: 'Newsletter subscribers', mode: 'data', source: 'src_monthly', column: 'newsletter_subscribers', agg: 'last', format: 'compact', showDelta: true, deltaRows: 1, deltaLabel: 'vs previous month', note: '' }
+    ]},
+    { id: uid('s'), type: 'chart', heading: 'Monthly views', intro: 'Views have roughly doubled in a year, with no paid promotion.', kind: 'line', source: 'src_monthly', x: 'month', series: ['views'], lastN: 12, sort: 'none', format: 'compact', zero: true, note: '' },
+    { id: uid('s'), type: 'chart', heading: 'Where the audience is', intro: 'Mostly English-speaking, with a strong European base.', kind: 'hbar', source: 'src_geo', x: 'country', series: ['share_of_views'], lastN: null, sort: 'none', format: 'percent', zero: true, note: '' },
+    { id: uid('s'), type: 'chart', heading: 'Who the audience is', intro: 'Two-thirds of views come from viewers aged 25 to 54.', kind: 'bar', source: 'src_age', x: 'age', series: ['share_of_views'], lastN: null, sort: 'none', format: 'percent', zero: true, note: '' },
+    { id: uid('s'), type: 'table', heading: 'Recent sponsored videos', intro: 'Views and tracked link clicks from the last five integrations.', source: 'src_int', columns: ['video','published','views','link_clicks'], limit: 5, newestFirst: true, note: '' },
+    { id: uid('s'), type: 'media', heading: 'See an integration', intro: 'Paste links to your best sponsored segments here. YouTube, Vimeo, Spotify, video files, and images all work.', layout: 'grid', items: [ {url:'', caption:'A recent sponsored segment'} ] },
+    { id: uid('s'), type: 'packages', heading: 'Ways to work together', intro: 'Every package includes a tracked link and a performance report 30 days after publishing.', tiers: [
+      { name: 'Single integration', price: '$3,500', cadence: 'per video', featured: false, deliverables: '60 to 90 second host-read segment\nLink in description and pinned comment\n30-day performance report', note: '' },
+      { name: 'Three-video series', price: '$9,000', cadence: 'over 6 to 8 weeks', featured: true, deliverables: 'Three host-read segments\nNewsletter placement in each issue that week\nPodcast mention\n30-day report for each video', note: 'Most sponsors choose this' },
+      { name: 'Quarterly partner', price: '$24,000', cadence: 'per quarter', featured: false, deliverables: 'Segment in every main video for the quarter\nNewsletter and podcast placements\nCategory exclusivity\nMonthly performance call', note: '' }
+    ], fineprint: 'Prices are sample figures. We only accept sponsors we would recommend to our audience.' },
+    { id: uid('s'), type: 'quote', quote: '[Add a short quote from a past sponsor, with their permission.]', name: '[Name]', role: '[Role, company]', image: '' },
+    { id: uid('s'), type: 'contact', heading: 'Book a slot', body: 'Tell us about your product and timing. We reply within two business days.', email: 'sponsorships@example.com', buttonLabel: 'Email us', buttonUrl: '', secondaryLabel: 'Download the media kit', secondaryUrl: '' }
+  ];
+  return d;
+}
+
+/* ================= State ================= */
+const LS_KEY = 'pitchDeckBuilder.deck.v1';
+const state = { deck: null, mode: 'build', data: {}, openSections: new Set(), openSources: new Set(), tab: 'sections', slides: false, origin: 'local', refreshTimer: null };
+
+function hydrateDeck(d){
+  const b = blankDeck();
+  d = d && typeof d === 'object' ? d : b;
+  d.meta = Object.assign({}, b.meta, d.meta || {});
+  d.theme = Object.assign({}, b.theme, d.theme || {});
+  d.sources = Array.isArray(d.sources) ? d.sources : [];
+  d.sections = Array.isArray(d.sections) ? d.sections.filter(s => s && SCHEMA[s.type]) : [];
+  d.sections.forEach(s => { if (!s.id) s.id = uid('s'); });
+  d.sources.forEach(s => { if (!s.id) s.id = uid('src_'); });
+  return d;
+}
+function loadData(){
+  const next = {};
+  for (const src of state.deck.sources){
+    const prev = state.data[src.id];
+    const parsed = parseCSV(src.csv || '');
+    next[src.id] = Object.assign({ live: false, error: '', fetchedAt: src.fetchedAt || null }, prev || {}, parsed);
+    if (prev && prev.liveCsv != null && state.mode === 'view') Object.assign(next[src.id], parseCSV(prev.liveCsv));
+  }
+  state.data = next;
+}
+async function fetchSource(src){
+  if (!src.url) return;
+  const entry = state.data[src.id] || (state.data[src.id] = {cols: [], rows: []});
+  entry.loading = true; entry.error = '';
+  try {
+    const res = await fetch(src.url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('The link answered with error ' + res.status + '.');
+    const text = await res.text();
+    if (/^\s*<(!doctype|html)/i.test(text)) throw new Error('The link returned a web page, not CSV. In Google Sheets use File > Share > Publish to web, and choose CSV.');
+    const parsed = parseCSV(text);
+    if (!parsed.cols.length) throw new Error('The file at that link is empty.');
+    Object.assign(entry, parsed, { live: true, fetchedAt: Date.now(), error: '', liveCsv: text });
+    if (state.mode === 'build'){ src.csv = text; src.fetchedAt = entry.fetchedAt; scheduleSave(); }
+  } catch (e) {
+    entry.live = false;
+    entry.error = (e && e.message && !/Failed to fetch|NetworkError|Load failed/i.test(e.message)) ? e.message
+      : 'Could not reach the link. Check that it is public and allows other sites to read it (Google Sheets "Publish to web" CSV links and GitHub raw links do). Showing the saved snapshot.';
+  } finally { entry.loading = false; }
+}
+async function refreshAll(showToast){
+  const withUrl = state.deck.sources.filter(s => s.url);
+  if (!withUrl.length){ if (showToast) toast('No data source has a link, so the saved numbers are shown.'); return; }
+  await Promise.all(withUrl.map(fetchSource));
+  renderDeck();
+  if (state.mode === 'build' && state.tab === 'data') renderDataEditor();
+  if (showToast){ const bad = withUrl.filter(s => state.data[s.id] && state.data[s.id].error).length; toast(bad ? bad + ' data source' + (bad > 1 ? 's' : '') + ' could not be refreshed. Saved numbers shown.' : 'Numbers refreshed.'); }
+}
+
+const scheduleSave = debounce(() => {
+  if (state.origin !== 'local') return;
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state.deck)); $('#saved-state').textContent = 'Saved in this browser'; }
+  catch(e){ $('#saved-state').textContent = 'Not saved here (storage full or blocked). Use Save file.'; }
+}, 400);
+const scheduleRender = debounce(() => renderDeck(), 120);
+function changed(){ state.origin = 'local'; scheduleRender(); scheduleSave(); }
+
+/* ================= Deck rendering ================= */
+function accentInk(hex){
+  const m = String(hex || '').match(/^#?([0-9a-f]{6})$/i); if (!m) return '#ffffff';
+  const n = parseInt(m[1], 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const L = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const lum = 0.2126 * L(r) + 0.7152 * L(g) + 0.0722 * L(b);
+  return lum > 0.36 ? '#10171d' : '#ffffff';
+}
+function srcById(id){ return state.deck.sources.find(s => s.id === id); }
+function dataFor(id){ return state.data[id] || null; }
+function creditFor(id, override){
+  if (!state.deck.meta.showSources) return '';
+  const src = srcById(id); const d = dataFor(id);
+  const parts = [];
+  const credit = (override || (src && src.note) || '').trim();
+  if (credit) parts.push('Source: ' + credit.replace(/\.$/, '') + '.');
+  const span = dateSpan(d); if (span) parts.push('Covers ' + span + '.');
+  if (d && d.fetchedAt && !span) parts.push((d.live ? 'Live data as of ' : 'Data as of ') + fmtDate(d.fetchedAt) + '.');
+  return parts.join(' ');
+}
+function rowsFor(id, lastN){
+  const d = dataFor(id); if (!d) return [];
+  let rows = d.rows || [];
+  if (lastN && +lastN > 0) rows = rows.slice(-(+lastN));
+  return rows;
+}
+function aggregate(rows, col, agg){
+  const vals = rows.map(r => toNum(r[col])).filter(v => v != null);
+  if (agg === 'count') return rows.length;
+  if (!vals.length) return null;
+  switch (agg){
+    case 'first': return vals[0];
+    case 'sum': return vals.reduce((a, b) => a + b, 0);
+    case 'avg': return vals.reduce((a, b) => a + b, 0) / vals.length;
+    case 'max': return Math.max(...vals);
+    case 'min': return Math.min(...vals);
+    default: return vals[vals.length - 1];
+  }
+}
+const isBuild = () => state.mode === 'build';
+const emptyBox = msg => isBuild() ? '<div class="empty">' + esc(msg) + '</div>' : '';
+const head = s => (s.heading ? '<h2 class="sh">' + esc(s.heading) + '</h2>' : '') + (s.intro ? '<div class="intro">' + md(s.intro) + '</div>' : '');
+
+const R = {};
+R.cover = s => {
+  const bg = safeSrc(s.background), logo = safeSrc(s.logo);
+  let stamp = '';
+  if (s.showStamp){
+    const ds = state.deck.sources.map(x => dataFor(x.id)).filter(Boolean);
+    const latest = Math.max(0, ...ds.map(d => d.fetchedAt || 0));
+    const live = ds.some(d => d.live);
+    if (latest) stamp = '<div class="stamp' + (live ? ' live' : '') + '"><span class="dot" aria-hidden="true"></span><span>' + (live ? 'Live numbers, updated ' : 'Numbers as of ') + esc(fmtDate(latest)) + '</span></div>';
+  }
+  const href = safeHref(s.ctaUrl);
+  return '<section class="sec cover" id="sec-' + esc(s.id) + '" data-sid="' + esc(s.id) + '">' +
+    (bg ? '<div class="bgimg" style="background-image:url(&quot;' + esc(bg) + '&quot;)"></div>' : '') +
+    '<div class="wrap"><div>' + (logo ? '<img class="logo" src="' + esc(logo) + '" alt="">' : '<div class="bar" aria-hidden="true"></div>') +
+    '<h1>' + esc(s.title || '') + '</h1>' + (s.subtitle ? '<p class="sub">' + esc(s.subtitle) + '</p>' : '') + '</div>' +
+    '<div class="foot">' + (s.ctaLabel && href ? '<a class="cta" href="' + esc(href) + '">' + esc(s.ctaLabel) + '</a>' : '') + stamp + '</div></div></section>';
+};
+R.stats = s => {
+  const credits = new Set();
+  const tiles = (s.tiles || []).map(t => {
+    let val = '', delta = '', note = t.note ? esc(t.note) : '';
+    if (t.mode === 'manual'){ val = esc(t.value || '—'); }
+    else {
+      const d = dataFor(t.source);
+      if (!d || !t.column) val = isBuild() ? '<span style="color:var(--ink3);font-size:.5em">Pick data</span>' : '—';
+      else {
+        const rows = d.rows || [];
+        const agg = t.agg || 'last';
+        const v = aggregate(rows, t.column, agg);
+        val = esc(agg === 'count' ? fmtVal(v, 'number') : fmtVal(v, t.format || 'number'));
+        if (t.showDelta && agg === 'last'){
+          const vals = rows.map(r => toNum(r[t.column])).filter(x => x != null);
+          const k = Math.max(1, +t.deltaRows || 1);
+          if (vals.length > k){
+            const a = vals[vals.length - 1], b = vals[vals.length - 1 - k];
+            if (b){
+              const pct = (a - b) / Math.abs(b) * 100;
+              const up = pct >= 0;
+              delta = '<div class="delta ' + (up ? 'up' : 'down') + '"><b>' + (up ? '▲ +' : '▼ ') + fmtVal(pct, 'number', Math.abs(pct) < 10 ? 1 : 0) + '%</b> ' + esc(t.deltaLabel || '') + '</div>';
+            }
+          }
+        }
+        credits.add(t.source);
+      }
+    }
+    return '<div class="tile"><div class="lab">' + esc(t.label || '') + '</div><div class="val">' + val + '</div>' + delta + (note ? '<div class="note">' + note + '</div>' : '') + '</div>';
+  }).join('');
+  const creditText = Array.from(credits).map(id => creditFor(id)).filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(' ');
+  return wrapSec(s, head(s) + (tiles ? '<div class="tiles">' + tiles + '</div>' : emptyBox('Add a number in the editor.')) + (creditText ? '<div class="srcline" style="margin-top:28px">' + esc(creditText) + '</div>' : ''));
+};
+let chartSeq = 0; const CHARTS = {};
+R.chart = s => {
+  const d = dataFor(s.source);
+  const series = (s.series || []).filter(c => d && d.cols.includes(c));
+  if (!d || !s.x || !series.length) return wrapSec(s, head(s) + emptyBox('Choose a data source, a labels column, and at least one value column.'));
+  let rows = rowsFor(s.source, s.lastN);
+  let labels = rows.map(r => r[s.x]);
+  let ser = series.slice(0, 8).map(c => ({ name: c, values: rows.map(r => toNum(r[c])) }));
+  if (s.kind === 'hbar' && s.sort && s.sort !== 'none'){
+    const idx = labels.map((_, i) => i).sort((a, b) => ((ser[0].values[a] ?? -Infinity) - (ser[0].values[b] ?? -Infinity)) * (s.sort === 'desc' ? -1 : 1));
+    labels = idx.map(i => labels[i]); ser = ser.map(x => ({ name: x.name, values: idx.map(i => x.values[i]) }));
+  }
+  const cid = 'c' + (++chartSeq);
+  CHARTS[cid] = { kind: s.kind || 'line', labels, series: ser, format: s.format || 'number', zero: s.zero !== false };
+  const scheme = state.deck.theme.scheme === 'dark' ? 'dark' : 'light';
+  const colors = ser.length === 1 ? [scheme === 'dark' && accentInk(state.deck.theme.accent) === '#ffffff' ? 'color-mix(in oklab, ' + state.deck.theme.accent + ' 62%, white)' : state.deck.theme.accent] : PALETTE[scheme];
+  ser.forEach((x, i) => x.color = colors[i]);
+  const legend = ser.length > 1 ? '<div class="legend">' + ser.map(x => '<span><i style="background:' + x.color + '"></i>' + esc(nice(x.name)) + '</span>').join('') + '</div>' : '';
+  const table = '<details class="datatable"><summary>Show the data</summary><div class="tscroll"><table class="dt"><thead><tr><th>' + esc(nice(s.x)) + '</th>' + ser.map(x => '<th class="num">' + esc(nice(x.name)) + '</th>').join('') + '</tr></thead><tbody>' +
+    labels.map((l, i) => '<tr><td>' + esc(prettyLabel(l)) + '</td>' + ser.map(x => '<td class="num">' + esc(fmtVal(x.values[i], CHARTS[cid].format)) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div></details>';
+  const credit = creditFor(s.source, s.note);
+  return wrapSec(s, head(s) + '<div class="chart-wrap">' + legend + '<div class="chart" data-cid="' + cid + '" role="img" aria-label="' + esc((s.heading || 'Chart') + ': ' + ser.map(x => nice(x.name)).join(', ') + ' by ' + nice(s.x)) + '"></div><div class="tip" aria-hidden="true"></div></div>' + table + (credit ? '<div class="srcline">' + esc(credit) + '</div>' : ''));
+};
+R.table = s => {
+  const d = dataFor(s.source);
+  if (!d || !d.cols.length) return wrapSec(s, head(s) + emptyBox('Choose a data source.'));
+  const cols = (s.columns && s.columns.length ? s.columns.filter(c => d.cols.includes(c)) : d.cols);
+  let rows = (d.rows || []).slice(+s.skip > 0 ? +s.skip : 0);
+  if (s.newestFirst) rows.reverse();
+  const names = {}; String(s.rename || '').split(/\r?\n/).forEach(ln => { const i = ln.indexOf('='); if (i > 0) names[ln.slice(0, i).trim()] = ln.slice(i + 1).trim(); });
+  if (s.limit && +s.limit > 0) rows = rows.slice(0, +s.limit);
+  const numeric = cols.map(c => rows.length && rows.every(r => r[c] === '' || toNum(r[c]) != null));
+  const credit = creditFor(s.source, s.note);
+  return wrapSec(s, head(s) + '<div class="tscroll"><table class="dt"><thead><tr>' + cols.map((c, j) => '<th' + (numeric[j] ? ' class="num"' : '') + '>' + esc(names[c] || nice(c)) + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.map(r => '<tr>' + cols.map((c, j) => '<td' + (numeric[j] ? ' class="num"' : '') + '>' + esc(numeric[j] ? fmtCell(r[c], c) : prettyLabel(r[c])) + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table></div>' + (credit ? '<div class="srcline">' + esc(credit) + '</div>' : ''));
+};
+function fmtCell(v, col){ const n = toNum(v); if (n == null) return v; if (/year/i.test(col || '') && /^\d{4}$/.test(String(v).trim())) return v; return /%\s*$/.test(v) ? v : fmtVal(n, 'number'); }
+function nice(c){ const s = String(c || '').replace(/_/g, ' ').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
+function mediaKind(u){
+  u = String(u || '');
+  if (/youtu\.?be/.test(u)) return 'YouTube video';
+  if (/vimeo\.com/.test(u)) return 'Vimeo video';
+  if (/spotify\.com/.test(u)) return 'Spotify';
+  if (/^data:image|\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)/i.test(u)) return 'Image';
+  if (/^data:video|\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(u)) return 'Video file';
+  if (/^data:audio|\.(mp3|m4a|wav|ogg)(\?|#|$)/i.test(u)) return 'Audio file';
+  return '';
+}
+function mediaHTML(url){
+  const u = String(url || '').trim(); let m;
+  const pl = h => '<a class="print-link" href="' + esc(h) + '">' + esc(h) + '</a>';
+  const ifr = (src, title) => '<div class="ratio"><iframe src="' + esc(src) + '" title="' + esc(title) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+  if ((m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/))) return ifr('https://www.youtube-nocookie.com/embed/' + m[1], 'YouTube video') + pl(u);
+  if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) return ifr('https://player.vimeo.com/video/' + m[1], 'Vimeo video') + pl(u);
+  if ((m = u.match(/open\.spotify\.com\/(?:embed\/)?(episode|show|track|playlist|album)\/([A-Za-z0-9]+)/))) return '<iframe class="spot" src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" title="Spotify player" loading="lazy" allow="encrypted-media; clipboard-write; fullscreen; picture-in-picture"></iframe>' + pl(u);
+  const src = safeSrc(u);
+  if (src && /^data:video|\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(src)) return '<div class="ratio"><video controls preload="metadata" src="' + esc(src) + '"></video></div>' + pl(u);
+  if (src && /^data:audio|\.(mp3|m4a|wav|ogg)(\?|#|$)/i.test(src)) return '<audio controls preload="metadata" src="' + esc(src) + '"></audio>' + pl(u);
+  if (src && (/^data:image/.test(src) || /\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)/i.test(src))) return '<img src="' + esc(src) + '" alt="" loading="lazy">';
+  const h = safeHref(u);
+  return h ? '<a class="linkcard" href="' + esc(h) + '" target="_blank" rel="noopener">' + esc(u) + '</a>' : '';
+}
+R.media = s => {
+  const items = (s.items || []).map(it => { const body = mediaHTML(it.url); if (!body) return isBuild() ? '<figure><div class="empty">Paste a YouTube, Vimeo, or Spotify link, a video or audio file link, or an image.</div>' + (it.caption ? '<figcaption>' + esc(it.caption) + '</figcaption>' : '') + '</figure>' : ''; return '<figure>' + body + (it.caption ? '<figcaption>' + esc(it.caption) + '</figcaption>' : '') + '</figure>'; }).join('');
+  if (!items && !isBuild()) return '';
+  return wrapSec(s, head(s) + (items ? '<div class="media ' + (s.layout === 'single' ? 'single' : 'grid') + '">' + items + '</div>' : emptyBox('Add media in the editor.')));
+};
+R.text = s => wrapSec(s, (s.heading ? '<h2 class="sh">' + esc(s.heading) + '</h2>' : '') + '<div class="prose">' + md(s.body || '') + '</div>');
+R.packages = s => {
+  const tiers = (s.tiers || []).map(t => '<div class="tier' + (t.featured ? ' feat' : '') + '">' + (t.featured && t.note ? '<div class="flag">' + esc(t.note) + '</div>' : '') + '<div class="tn">' + esc(t.name || '') + '</div>' +
+    (t.price ? '<div class="price">' + esc(t.price) + '</div>' : '') + (t.cadence ? '<div class="cad">' + esc(t.cadence) + '</div>' : '<div class="cad"></div>') +
+    '<ul>' + String(t.deliverables || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' +
+    (!t.featured && t.note ? '<div class="tnote">' + esc(t.note) + '</div>' : '') + '</div>').join('');
+  return wrapSec(s, head(s) + (tiers ? '<div class="tiers">' + tiers + '</div>' : emptyBox('Add a package in the editor.')) + (s.fineprint ? '<div class="fine">' + md(s.fineprint) + '</div>' : ''));
+};
+R.logos = s => {
+  const items = (s.items || []).filter(l => l.name || l.image).map(l => {
+    const img = safeSrc(l.image), href = safeHref(l.link);
+    const inner = img ? '<img src="' + esc(img) + '" alt="' + esc(l.name || 'Partner logo') + '">' : '<span class="word">' + esc(l.name) + '</span>';
+    return href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + inner + '</a>' : '<span>' + inner + '</span>';
+  }).join('');
+  return wrapSec(s, head(s) + (items ? '<div class="logos">' + items + '</div>' : emptyBox('Add partner names or logos in the editor.')));
+};
+R.quote = s => {
+  if (!s.quote) return wrapSec(s, emptyBox('Add a quote in the editor.'));
+  const img = safeSrc(s.image);
+  return wrapSec(s, '<div class="quote"><div class="mark" aria-hidden="true">“</div><figure style="margin:0"><blockquote>' + esc(s.quote) + '</blockquote><figcaption class="who">' + (img ? '<img src="' + esc(img) + '" alt="">' : '') + '<div><b>' + esc(s.name || '') + '</b>' + (s.role ? '<br><span>' + esc(s.role) + '</span>' : '') + '</div></figcaption></figure></div>');
+};
+R.contact = s => {
+  const mail = String(s.email || '').trim();
+  const main = safeHref(s.buttonUrl) || (mail ? 'mailto:' + mail : '');
+  const sec = safeHref(s.secondaryUrl);
+  return wrapSec(s, '<span id="contact"></span>' + head({heading: s.heading, intro: s.body}) + (mail ? '<a class="mail" href="mailto:' + esc(mail) + '">' + esc(mail) + '</a>' : '') +
+    '<div class="btns">' + (s.buttonLabel && main ? '<a class="cta" href="' + esc(main) + '">' + esc(s.buttonLabel) + '</a>' : '') + (s.secondaryLabel && sec ? '<a class="cta ghost" href="' + esc(sec) + '" target="_blank" rel="noopener">' + esc(s.secondaryLabel) + '</a>' : '') + '</div>', 'contact');
+};
+function wrapSec(s, inner, extra){ return '<section class="sec sec-' + s.type + (extra ? ' ' + extra : '') + '" id="sec-' + esc(s.id) + '" data-sid="' + esc(s.id) + '"><div class="wrap">' + inner + '</div></section>'; }
+
+function renderDeck(){
+  const root = $('#deck-root'); const d = state.deck;
+  for (const k in CHARTS) delete CHARTS[k];
+  root.className = 'deck scheme-' + (d.theme.scheme === 'dark' ? 'dark' : 'light') + ' font-' + (d.theme.font || 'archivo') + (state.slides && state.mode === 'view' ? ' slides' : '');
+  root.style.setProperty('--accent', d.theme.accent || '#0e6e7c');
+  root.style.setProperty('--accent-ink', accentInk(d.theme.accent));
+  let html = d.sections.map(s => { try { return R[s.type](s); } catch(e){ console.error(e); return wrapSec(s, emptyBox('This section could not be drawn: ' + e.message)); } }).join('');
+  if (!d.sections.length) html = '<section class="sec"><div class="wrap">' + (isBuild() ? '<div class="empty">Add a section from the Sections tab, or load the sample to see a full deck.</div>' : '') + '</div></section>';
+  const colo = [d.meta.publisher ? '<p>' + esc(d.meta.publisher) + '</p>' : '', d.meta.footer ? md(d.meta.footer) : ''].join('');
+  if (colo) html += '<footer class="colophon"><div class="wrap">' + colo + '</div></footer>';
+  root.innerHTML = html;
+  $$('.chart', root).forEach(drawChart);
+  if (state.mode === 'view') document.title = d.meta.title || 'Pitch deck';
+}
+
+/* ================= Charts (SVG) ================= */
+function niceTicks(min, max, count = 5){
+  if (min === max){ max = min + 1; if (min > 0) min = 0; }
+  const span = max - min; let step = Math.pow(10, Math.floor(Math.log10(span / count)));
+  const err = span / count / step;
+  if (err >= 7.5) step *= 10; else if (err >= 3.5) step *= 5; else if (err >= 1.5) step *= 2;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step;
+  const ticks = []; for (let v = lo; v <= hi + step / 2; v += step) ticks.push(+v.toPrecision(12));
+  return { lo, hi, ticks };
+}
+const tw = (s, px = 12) => String(s).length * px * 0.58;
+function roundedBar(x, y, w, h, r, horizontal){
+  if (w <= 0 || h <= 0) return '';
+  if (horizontal){ r = Math.min(r, h / 2, w); return 'M' + x + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h - r) + 'Q' + (x + w) + ',' + (y + h) + ' ' + (x + w - r) + ',' + (y + h) + 'H' + x + 'Z'; }
+  r = Math.min(r, w / 2, h); return 'M' + x + ',' + (y + h) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h) + 'Z';
+}
+function drawChart(host){
+  const spec = CHARTS[host.dataset.cid]; if (!spec) return;
+  const W = Math.max(280, Math.round(host.clientWidth || 700));
+  const surf = getComputedStyle(host.closest('.deck')).getPropertyValue('--surface').trim() || '#fff';
+  const all = spec.series.flatMap(s => s.values).filter(v => v != null);
+  if (!all.length){ host.innerHTML = '<div class="empty">No numbers found in the chosen columns.</div>'; return; }
+  let svg = '', hits = [];
+  if (spec.kind === 'hbar'){
+    const n = spec.labels.length, ns = spec.series.length;
+    const labW = Math.min(W * 0.38, Math.max(...spec.labels.map(l => tw(shortLabel(l), 13))) + 14);
+    const barH = ns > 1 ? 14 : 20, gap = 2, rowH = ns * barH + (ns - 1) * gap + 14;
+    const H = n * rowH + 8;
+    const maxV = Math.max(0, ...all), minV = Math.min(0, ...all);
+    const valW = tw(fmtVal(maxV, spec.format), 13) + 10;
+    const plotW = W - labW - valW;
+    const sx = v => labW + (v - minV) / ((maxV - minV) || 1) * plotW;
+    svg += '<line class="base" x1="' + sx(0) + '" x2="' + sx(0) + '" y1="0" y2="' + (H - 6) + '"/>';
+    spec.labels.forEach((l, i) => {
+      const y0 = i * rowH + 7;
+      svg += '<text x="' + (labW - 10) + '" y="' + (y0 + (rowH - 14) / 2 + 4.5) + '" text-anchor="end" class="lbl-strong" style="font-size:13px">' + esc(shortLabel(l)) + '</text>';
+      spec.series.forEach((s, j) => {
+        const v = s.values[i]; if (v == null) return;
+        const y = y0 + j * (barH + gap);
+        const x0 = sx(Math.min(0, v)), w = Math.abs(sx(v) - sx(0));
+        svg += '<path d="' + roundedBar(x0, y, w, barH, 4, true) + '" fill="' + s.color + '"/>';
+        if (ns <= 2) svg += '<text x="' + (x0 + w + 6) + '" y="' + (y + barH / 2 + 4.5) + '" style="font-size:13px" class="lbl-strong">' + esc(fmtVal(v, spec.format)) + '</text>';
+        hits.push({ x: 0, y: y - 2, w: W, h: barH + 4, i, j });
+      });
+    });
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '">' + svg + hits.map((h, k) => '<rect data-k="' + k + '" x="' + h.x + '" y="' + h.y + '" width="' + h.w + '" height="' + h.h + '" fill="transparent"/>').join('') + '</svg>';
+    hookBarHover(host, spec, hits);
+    return;
+  }
+  const H = W < 520 ? 240 : 300;
+  const minD = Math.min(...all), maxD = Math.max(...all);
+  const lo0 = (spec.kind === 'bar' || spec.zero) ? Math.min(0, minD) : minD - (maxD - minD) * 0.08;
+  const { lo, hi, ticks } = niceTicks(lo0, Math.max(maxD, lo0 + 1e-9), 5);
+  const padL = Math.max(...ticks.map(t => tw(axisFmt(t, spec.format)))) + 12;
+  const lastLab = spec.kind === 'line' && spec.series.length <= 4 ? Math.max(...spec.series.map(s => tw(fmtVal(lastVal(s.values), spec.format), 12))) + 14 : 10;
+  const pad = { l: padL, r: lastLab, t: 12, b: 28 };
+  const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+  const sy = v => pad.t + ph - (v - lo) / ((hi - lo) || 1) * ph;
+  ticks.forEach(t => { const y = sy(t); svg += '<line class="' + (t === 0 ? 'base' : 'grid') + '" x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + y + '" y2="' + y + '"' + (t === 0 ? '' : ' stroke-dasharray="2 4"') + '/><text x="' + (pad.l - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + esc(axisFmt(t, spec.format)) + '</text>'; });
+  const n = spec.labels.length;
+  const maxLabels = Math.max(2, Math.floor(pw / 74));
+  const every = Math.ceil(n / maxLabels);
+  if (spec.kind === 'bar'){
+    const band = pw / n, ns = spec.series.length, inner = band * 0.72;
+    const bw = Math.max(2, (inner - (ns - 1) * 2) / ns);
+    spec.labels.forEach((l, i) => {
+      const bx = pad.l + i * band + (band - inner) / 2;
+      if (i % every === 0) svg += '<text x="' + (pad.l + i * band + band / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + esc(shortLabel(l)) + '</text>';
+      spec.series.forEach((s, j) => {
+        const v = s.values[i]; if (v == null) return;
+        const x = bx + j * (bw + 2);
+        const y1 = sy(Math.max(0, v)), y2 = sy(Math.min(0, v));
+        svg += v >= 0 ? '<path d="' + roundedBar(x, y1, bw, y2 - y1, 4) + '" fill="' + s.color + '"/>' : '<rect x="' + x + '" y="' + y1 + '" width="' + bw + '" height="' + (y2 - y1) + '" fill="' + s.color + '"/>';
+        if (ns === 1 && n <= 8) svg += '<text x="' + (x + bw / 2) + '" y="' + (y1 - 6) + '" text-anchor="middle" class="lbl-strong">' + esc(fmtVal(v, spec.format)) + '</text>';
+      });
+      hits.push({ x: pad.l + i * band, y: pad.t, w: band, h: ph, i, j: -1 });
+    });
+    svg += '<line class="base" x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + sy(Math.max(lo, 0)) + '" y2="' + sy(Math.max(lo, 0)) + '"/>';
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '">' + svg + hits.map((h, k) => '<rect data-k="' + k + '" x="' + h.x + '" y="' + h.y + '" width="' + h.w + '" height="' + h.h + '" fill="transparent"/>').join('') + '</svg>';
+    hookBarHover(host, spec, hits);
+    return;
+  }
+  // line
+  const sx = i => n === 1 ? pad.l + pw / 2 : pad.l + i * pw / (n - 1);
+  spec.labels.forEach((l, i) => { if (i % every === 0 && (i === 0 || n - 1 - i >= every * 0.6 || i === n - 1) || i === n - 1 && (n - 1) % every >= every * 0.6) svg += '<text x="' + sx(i) + '" y="' + (H - 8) + '" text-anchor="' + (i === 0 && n > 1 ? 'start' : i === n - 1 && n > 1 ? 'end' : 'middle') + '">' + esc(shortLabel(l)) + '</text>'; });
+  spec.series.forEach(s => {
+    let dstr = '', pen = false;
+    s.values.forEach((v, i) => { if (v == null){ pen = false; return; } dstr += (pen ? 'L' : 'M') + sx(i).toFixed(1) + ',' + sy(v).toFixed(1); pen = true; });
+    svg += '<path d="' + dstr + '" fill="none" stroke="' + s.color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    const li = lastIdx(s.values);
+    if (li >= 0){
+      svg += '<circle cx="' + sx(li) + '" cy="' + sy(s.values[li]) + '" r="4.5" fill="' + s.color + '" stroke="' + surf + '" stroke-width="2"/>';
+      if (spec.series.length <= 4) svg += '<text x="' + (sx(li) + 9) + '" y="' + (sy(s.values[li]) + 4) + '" class="lbl-strong">' + esc(fmtVal(s.values[li], spec.format)) + '</text>';
+    }
+  });
+  svg += '<line class="xh" x1="0" x2="0" y1="' + pad.t + '" y2="' + (pad.t + ph) + '" stroke="var(--ink3)" stroke-width="1" opacity="0"/>';
+  svg += '<g class="xdots"></g>';
+  host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '">' + svg + '<rect class="ov" x="' + pad.l + '" y="0" width="' + pw + '" height="' + (H - pad.b) + '" fill="transparent"/></svg>';
+  const svgEl = $('svg', host), tip = host.parentElement.querySelector('.tip'), xh = $('.xh', svgEl), dots = $('.xdots', svgEl);
+  const move = ev => {
+    const r = svgEl.getBoundingClientRect(); const scale = W / r.width;
+    const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) * scale;
+    const i = n === 1 ? 0 : Math.max(0, Math.min(n - 1, Math.round((px - pad.l) / (pw / (n - 1)))));
+    const x = sx(i);
+    xh.setAttribute('x1', x); xh.setAttribute('x2', x); xh.setAttribute('opacity', '.6');
+    dots.innerHTML = spec.series.map(s => s.values[i] == null ? '' : '<circle cx="' + x + '" cy="' + sy(s.values[i]) + '" r="4.5" fill="' + s.color + '" stroke="' + surf + '" stroke-width="2"/>').join('');
+    showTip(tip, host, '<b>' + esc(prettyLabel(spec.labels[i])) + '</b>' + spec.series.map(s => '<div>' + (spec.series.length > 1 ? '<i style="background:' + s.color + '"></i>' + esc(nice(s.name)) + ': ' : '') + esc(fmtVal(s.values[i], spec.format)) + '</div>').join(''), x / scale, sy(Math.max(...spec.series.map(s => s.values[i] ?? lo))) / scale);
+  };
+  const leave = () => { xh.setAttribute('opacity', '0'); dots.innerHTML = ''; tip.classList.remove('on'); };
+  const ov = $('.ov', svgEl);
+  ov.addEventListener('mousemove', move); ov.addEventListener('touchstart', move, {passive:true}); ov.addEventListener('touchmove', move, {passive:true});
+  ov.addEventListener('mouseleave', leave); ov.addEventListener('touchend', () => setTimeout(leave, 1500));
+}
+function lastIdx(a){ for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return i; return -1; }
+function lastVal(a){ const i = lastIdx(a); return i < 0 ? 0 : a[i]; }
+function hookBarHover(host, spec, hits){
+  const svgEl = $('svg', host), tip = host.parentElement.querySelector('.tip');
+  $$('rect[data-k]', svgEl).forEach(rect => {
+    const h = hits[+rect.dataset.k];
+    const show = () => {
+      const r = svgEl.getBoundingClientRect(), scale = svgEl.viewBox.baseVal.width / r.width;
+      const ser = h.j >= 0 ? [spec.series[h.j]] : spec.series;
+      showTip(tip, host, '<b>' + esc(prettyLabel(spec.labels[h.i])) + '</b>' + ser.map(s => '<div>' + (spec.series.length > 1 ? '<i style="background:' + s.color + '"></i>' + esc(nice(s.name)) + ': ' : '') + esc(fmtVal(s.values[h.i], spec.format)) + '</div>').join(''), (h.x + h.w / 2) / scale, h.y / scale);
+      svgEl.querySelectorAll('path,rect:not([data-k])').forEach(p => p.style.opacity = '');
+    };
+    rect.addEventListener('mouseenter', show); rect.addEventListener('touchstart', show, {passive:true});
+    rect.addEventListener('mouseleave', () => tip.classList.remove('on'));
+  });
+}
+function showTip(tip, host, html, x, y){
+  tip.innerHTML = html; tip.classList.add('on');
+  const wrap = host.parentElement, hostOff = host.offsetTop, hostLeft = host.offsetLeft;
+  const tw0 = tip.offsetWidth, th = tip.offsetHeight;
+  let left = hostLeft + x + 12; if (left + tw0 > wrap.clientWidth - 4) left = hostLeft + x - tw0 - 12; if (left < 4) left = 4;
+  let top = hostOff + y - th - 10; if (top < 2) top = hostOff + y + 14;
+  tip.style.left = left + 'px'; tip.style.top = top + 'px';
+}
+
+/* ================= Editor: form engine ================= */
+let fidSeq = 0;
+function buildFields(host, fields, obj, ctx){
+  host.innerHTML = '';
+  for (const f of fields){ if (f.showIf && !f.showIf(obj)) continue; host.appendChild(buildField(f, obj, ctx)); }
+}
+function buildField(f, obj, ctx){
+  const wrap = el('div', 'fld fld-' + f.type); const id = 'f' + (++fidSeq);
+  const label = () => { const l = el('label', null, f.label); l.htmlFor = id; wrap.appendChild(l); };
+  const done = () => { if (f.help){ const h = el('div', 'help', f.help); wrap.appendChild(h); } return wrap; };
+  const fire = () => { ctx.changed(f); if (f.restructure) ctx.rebuild(); };
+  switch (f.type){
+    case 'text': case 'url': case 'number': {
+      label(); const i = el('input'); i.id = id; i.type = f.type === 'number' ? 'number' : f.type === 'url' ? 'url' : 'text';
+      if (f.type === 'number') i.min = '0';
+      i.value = obj[f.key] ?? '';
+      i.addEventListener('input', () => { obj[f.key] = f.type === 'number' ? (i.value === '' ? null : +i.value) : i.value; ctx.changed(f); });
+      if (f.restructure) i.addEventListener('change', () => ctx.rebuild());
+      wrap.appendChild(i); return done();
+    }
+    case 'textarea': {
+      label(); const t = el('textarea'); t.id = id; t.rows = f.rows || 3; t.value = obj[f.key] ?? '';
+      t.addEventListener('input', () => { obj[f.key] = t.value; ctx.changed(f); });
+      wrap.appendChild(t); return done();
+    }
+    case 'checkbox': {
+      const l = el('label'); const c = el('input'); c.type = 'checkbox'; c.checked = !!obj[f.key];
+      c.addEventListener('change', () => { obj[f.key] = c.checked; fire(); });
+      l.append(c, document.createTextNode(f.label)); wrap.appendChild(l); return done();
+    }
+    case 'color': {
+      label(); const row = el('div', 'row'); const c = el('input'); c.type = 'color'; c.id = id; c.value = obj[f.key] || '#0e6e7c';
+      const t = el('input'); t.type = 'text'; t.value = c.value; t.setAttribute('aria-label', f.label + ' hex value');
+      c.addEventListener('input', () => { obj[f.key] = c.value; t.value = c.value; ctx.changed(f); });
+      t.addEventListener('input', () => { if (/^#[0-9a-f]{6}$/i.test(t.value)){ obj[f.key] = t.value; c.value = t.value; ctx.changed(f); } });
+      row.append(c, t); wrap.appendChild(row); return done();
+    }
+    case 'select': case 'source': case 'column': {
+      label(); const s = el('select'); s.id = id;
+      let opts = f.options || [];
+      if (f.type === 'source') opts = [['', state.deck.sources.length ? 'Choose a data source' : 'No data yet: add one in the Data tab']].concat(state.deck.sources.map(x => [x.id, x.name || 'Untitled data']));
+      if (f.type === 'column'){ const cols = ctx.columns(obj[f.from || 'source']); opts = [['', cols.length ? 'Choose a column' : 'Choose a data source first']].concat(cols.map(c => [c, c])); if (obj[f.key] && !cols.includes(obj[f.key])) opts.push([obj[f.key], obj[f.key] + ' (not found)']); }
+      const cur = obj[f.key] ?? (f.options ? f.options[0][0] : '');
+      opts.forEach(([v, t]) => { const o = el('option', null, t); o.value = v; if (String(v) === String(cur)) o.selected = true; s.appendChild(o); });
+      if (obj[f.key] == null && f.options) obj[f.key] = f.options[0][0];
+      s.addEventListener('change', () => { obj[f.key] = s.value; fire(); });
+      wrap.appendChild(s); return done();
+    }
+    case 'columns': {
+      const lb = el('div', 'lbl', f.label); wrap.appendChild(lb);
+      const box = el('div', 'checks'); box.setAttribute('role', 'group'); box.setAttribute('aria-label', f.label);
+      const cols = ctx.columns(obj.source); const sel = new Set(obj[f.key] || []);
+      if (!cols.length) box.appendChild(el('span', 'none', 'Choose a data source first.'));
+      cols.forEach(c => { const l = el('label'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = sel.has(c);
+        cb.addEventListener('change', () => { const cur = new Set(obj[f.key] || []); cb.checked ? cur.add(c) : cur.delete(c); obj[f.key] = cols.filter(x => cur.has(x)); ctx.changed(f); });
+        l.append(cb, document.createTextNode(c)); box.appendChild(l); });
+      wrap.appendChild(box); return done();
+    }
+    case 'image': {
+      label(); const row = el('div', 'row'); const i = el('input'); i.type = 'text'; i.id = id; i.placeholder = 'https://…';
+      const v = obj[f.key] || ''; i.value = v.startsWith('data:') ? '(uploaded file)' : v; i.dataset.data = v.startsWith('data:') ? '1' : '';
+      i.addEventListener('focus', () => { if (i.dataset.data) i.select(); });
+      i.addEventListener('input', () => { i.dataset.data = ''; obj[f.key] = i.value; ctx.changed(f); });
+      const up = el('button', 'btn small', 'Upload'); up.type = 'button';
+      const file = el('input'); file.type = 'file'; file.accept = f.accept || 'image/*'; file.hidden = true;
+      up.addEventListener('click', () => file.click());
+      file.addEventListener('change', () => { const fl = file.files[0]; if (!fl) return;
+        if (fl.size > 4e6) { toast('That file is over 4 MB. Host it online and paste its link instead.'); file.value = ''; return; }
+        const rd = new FileReader(); rd.onload = () => { obj[f.key] = rd.result; i.value = '(uploaded file)'; i.dataset.data = '1'; ctx.changed(f); if (fl.size > 300e3) toast('Uploaded. Large files make share links long; a hosted link keeps them short.'); }; rd.readAsDataURL(fl); file.value = ''; });
+      row.append(i, up, file); wrap.appendChild(row); return done();
+    }
+    case 'items': {
+      const lb = el('div', 'lbl', f.label); wrap.appendChild(lb);
+      const list = obj[f.key] || (obj[f.key] = []);
+      const box = el('div', 'items');
+      list.forEach((it, idx) => {
+        const fs = el('fieldset', 'item'); const lg = el('legend');
+        const name = el('span', null, f.itemLabel(it, idx)); lg.appendChild(name);
+        const mk = (txt, title, fn, cls) => { const b = el('button', 'btn icon' + (cls ? ' ' + cls : ''), txt); b.type = 'button'; b.title = title; b.setAttribute('aria-label', title); b.addEventListener('click', fn); return b; };
+        lg.append(mk('↑', 'Move up', () => { if (idx > 0){ [list[idx-1], list[idx]] = [list[idx], list[idx-1]]; ctx.changed(f); ctx.rebuild(); } }),
+                  mk('↓', 'Move down', () => { if (idx < list.length - 1){ [list[idx+1], list[idx]] = [list[idx], list[idx+1]]; ctx.changed(f); ctx.rebuild(); } }),
+                  mk('⧉', 'Duplicate', () => { list.splice(idx + 1, 0, structuredClone(it)); ctx.changed(f); ctx.rebuild(); }),
+                  mk('✕', 'Remove', () => { list.splice(idx, 1); ctx.changed(f); ctx.rebuild(); }, 'danger'));
+        fs.appendChild(lg);
+        const inner = el('div');
+        const sub = Object.assign({}, ctx, { changed: ff => { name.textContent = f.itemLabel(it, idx); ctx.changed(ff); } });
+        buildFields(inner, f.fields, it, sub);
+        fs.appendChild(inner); box.appendChild(fs);
+      });
+      const add = el('button', 'btn small', f.addLabel || 'Add'); add.type = 'button';
+      add.addEventListener('click', () => { list.push(f.make()); ctx.changed(f); ctx.rebuild(); });
+      wrap.append(box, add); return done();
+    }
+  }
+  return wrap;
+}
+const columnsOf = id => (state.data[id] && state.data[id].cols) || [];
+
+/* ================= Editor: panels ================= */
+function renderSectionsEditor(){
+  const p = $('#p-sections'); p.innerHTML = '';
+  p.appendChild(el('p', 'hint', 'Each section is one block of the pitch. Click a section in the preview to edit it. Numbers and charts read from the Data tab.'));
+  state.deck.sections.forEach((s, idx) => p.appendChild(sectionCard(s, idx)));
+  const row = el('div', 'addrow'); const sel = el('select'); sel.setAttribute('aria-label', 'Section type to add');
+  Object.entries(SCHEMA).forEach(([k, v]) => { const o = el('option', null, v.label); o.value = k; sel.appendChild(o); });
+  sel.value = 'stats';
+  const add = el('button', 'btn primary', 'Add section'); add.type = 'button';
+  add.addEventListener('click', () => {
+    const s = Object.assign({ id: uid('s'), type: sel.value }, SCHEMA[sel.value].make());
+    state.deck.sections.push(s); state.openSections.add(s.id); changed(); renderSectionsEditor(); renderDeck();
+    setTimeout(() => { const c = $('[data-card="' + s.id + '"]'); c && c.scrollIntoView({block:'nearest'}); scrollPreviewTo(s.id); }, 150);
+  });
+  row.append(sel, add); p.appendChild(row);
+}
+function sectionCard(s, idx){
+  const list = state.deck.sections;
+  const d = el('details', 'card'); d.dataset.card = s.id; if (state.openSections.has(s.id)) d.open = true;
+  const sum = el('summary'); const chev = el('span', 'chev', '▸'); chev.setAttribute('aria-hidden', 'true');
+  const t = el('div', 't'); const b = el('b', null, sectionTitle(s)); const sm = el('small', null, SCHEMA[s.type].label); t.append(b, sm);
+  const mk = (txt, title, fn, cls) => { const x = el('button', 'btn icon' + (cls ? ' ' + cls : ''), txt); x.type = 'button'; x.title = title; x.setAttribute('aria-label', title + ': ' + sectionTitle(s));
+    x.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); fn(); }); return x; };
+  sum.append(chev, t,
+    mk('↑', 'Move up', () => { if (idx > 0){ [list[idx-1], list[idx]] = [list[idx], list[idx-1]]; changed(); renderSectionsEditor(); renderDeck(); } }),
+    mk('↓', 'Move down', () => { if (idx < list.length - 1){ [list[idx+1], list[idx]] = [list[idx], list[idx+1]]; changed(); renderSectionsEditor(); renderDeck(); } }),
+    mk('⧉', 'Duplicate', () => { const c = structuredClone(s); c.id = uid('s'); list.splice(idx + 1, 0, c); state.openSections.add(c.id); changed(); renderSectionsEditor(); renderDeck(); }),
+    mk('✕', 'Delete', () => { if (!confirm('Delete the "' + sectionTitle(s) + '" section?')) return; list.splice(idx, 1); changed(); renderSectionsEditor(); renderDeck(); }, 'danger'));
+  d.appendChild(sum);
+  const body = el('div', 'body'); d.appendChild(body);
+  const ctx = { columns: columnsOf, changed: () => { b.textContent = sectionTitle(s); changed(); }, rebuild: () => { buildFields(body, SCHEMA[s.type].fields, s, ctx); renderDeck(); } };
+  let built = false;
+  const build = () => { if (!built){ buildFields(body, SCHEMA[s.type].fields, s, ctx); built = true; } };
+  if (d.open) build();
+  d.addEventListener('toggle', () => { if (d.open){ state.openSections.add(s.id); build(); scrollPreviewTo(s.id); } else state.openSections.delete(s.id); });
+  return d;
+}
+function sectionTitle(s){ return (s.heading || s.title || s.quote || '').trim().slice(0, 60) || SCHEMA[s.type].label; }
+function scrollPreviewTo(id){ const t = $('#sec-' + CSS.escape(id)); if (t) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }
+
+function renderDataEditor(){
+  const p = $('#p-data'); p.innerHTML = '';
+  p.appendChild(el('h2', null, 'Data sources'));
+  const hint = el('div', 'hint');
+  hint.innerHTML = 'Each source is a table with a header row. Paste or upload a CSV for a fixed snapshot, or add a <b>link to a CSV</b> so the deck pulls fresh numbers every time it opens.<br><br>To link a Google Sheet: <i>File &gt; Share &gt; Publish to web</i>, pick the tab, choose <code>CSV</code>, and paste the link here. A raw CSV link from your GitHub repo also works.';
+  p.appendChild(hint);
+  state.deck.sources.forEach((src, idx) => p.appendChild(sourceCard(src, idx)));
+  const add = el('button', 'btn primary', 'Add data source'); add.type = 'button';
+  add.addEventListener('click', () => { const s = { id: uid('src_'), name: 'New data', url: '', note: '', csv: 'label,value\n', fetchedAt: Date.now() }; state.deck.sources.push(s); state.openSources.add(s.id); loadData(); changed(); renderDataEditor(); });
+  p.appendChild(add);
+}
+function sourceCard(src, idx){
+  const d = el('details', 'card'); if (state.openSources.has(src.id)) d.open = true;
+  d.addEventListener('toggle', () => d.open ? state.openSources.add(src.id) : state.openSources.delete(src.id));
+  const sum = el('summary'); const chev = el('span', 'chev', '▸');
+  const t = el('div', 't'); const b = el('b', null, src.name || 'Untitled data'); const info = dataFor(src.id) || {cols:[], rows:[]};
+  const sm = el('small', null, (src.url ? (info.live ? 'Linked, live' : 'Linked') : 'Snapshot') + ', ' + (info.rows ? info.rows.length : 0) + ' rows'); t.append(b, sm);
+  const del = el('button', 'btn icon danger', '✕'); del.type = 'button'; del.title = 'Delete data source'; del.setAttribute('aria-label', 'Delete data source ' + (src.name || ''));
+  del.addEventListener('click', e => { e.preventDefault(); e.stopPropagation();
+    const users = state.deck.sections.filter(s => s.source === src.id || (s.tiles || []).some(t => t.source === src.id)).length;
+    if (!confirm('Delete "' + (src.name || 'this data') + '"?' + (users ? ' ' + users + ' section(s) use it.' : ''))) return;
+    state.deck.sources.splice(idx, 1); loadData(); changed(); renderDataEditor(); renderSectionsEditor(); });
+  sum.append(chev, t, del); d.appendChild(sum);
+  const body = el('div', 'body'); d.appendChild(body);
+  const ctx = { columns: columnsOf, changed: f => { b.textContent = src.name || 'Untitled data'; if (f.key === 'csv'){ src.fetchedAt = Date.now(); loadData(); refreshStatus(); } changed(); }, rebuild: () => {} };
+  buildFields(body, [
+    {key:'name', type:'text', label:'Name', help:'How this data appears in section menus.'},
+    {key:'url', type:'url', label:'Live CSV link (optional)'},
+    {key:'note', type:'text', label:'Source credit', help:'Shown under numbers and charts, e.g. YouTube Studio, Oct 2026.'}
+  ], src, ctx);
+  const btns = el('div', 'row'); btns.style.margin = '0 0 10px';
+  const fetchB = el('button', 'btn small', 'Pull from link now'); fetchB.type = 'button';
+  fetchB.addEventListener('click', async () => { if (!src.url){ toast('Add a CSV link first.'); return; } fetchB.disabled = true; fetchB.textContent = 'Pulling…'; await fetchSource(src); fetchB.disabled = false; fetchB.textContent = 'Pull from link now'; csvT.value = src.csv || ''; refreshStatus(); renderDeck(); const e = dataFor(src.id); toast(e && e.error ? 'Could not pull from the link.' : 'Pulled ' + e.rows.length + ' rows.'); });
+  const upB = el('button', 'btn small', 'Upload CSV'); upB.type = 'button';
+  const fi = el('input'); fi.type = 'file'; fi.accept = '.csv,.tsv,text/csv,text/plain'; fi.hidden = true;
+  upB.addEventListener('click', () => fi.click());
+  fi.addEventListener('change', () => { const f = fi.files[0]; if (!f) return; f.text().then(tx => { src.csv = tx; src.fetchedAt = Date.now(); if (!src.name || src.name === 'New data') src.name = f.name.replace(/\.(csv|tsv|txt)$/i, ''); csvT.value = tx; loadData(); changed(); refreshStatus(); renderDeck(); b.textContent = src.name; }); fi.value = ''; });
+  btns.append(fetchB, upB, fi); body.appendChild(btns);
+  const status = el('div', 'status'); const chips = el('div', 'chips'); body.append(status, chips);
+  const cw = el('div', 'fld'); const cl = el('label', null, 'Data (CSV snapshot)'); const csvT = el('textarea', 'csv'); const cid = 'f' + (++fidSeq); cl.htmlFor = cid; csvT.id = cid; csvT.value = src.csv || ''; csvT.rows = 8; csvT.spellcheck = false;
+  csvT.addEventListener('input', debounce(() => { src.csv = csvT.value; ctx.changed({key:'csv'}); }, 250));
+  cw.append(cl, csvT, el('div', 'help', 'First row is the column names. When a link is set, this holds the last numbers pulled from it, used if the link is unreachable.')); body.appendChild(cw);
+  function refreshStatus(){
+    const e = dataFor(src.id) || {cols:[], rows:[]};
+    status.className = 'status' + (e.error ? ' err' : '');
+    status.textContent = e.error ? e.error : (e.rows.length + ' rows, ' + e.cols.length + ' columns' + (e.fetchedAt ? '. ' + (e.live ? 'Pulled live ' : 'As of ') + fmtDate(e.fetchedAt) : '') + '.');
+    chips.innerHTML = ''; e.cols.forEach(c => chips.appendChild(el('span', null, c)));
+    sm.textContent = (src.url ? (e.live ? 'Linked, live' : 'Linked') : 'Snapshot') + ', ' + e.rows.length + ' rows';
+  }
+  refreshStatus();
+  return d;
+}
+function renderDeckEditor(){
+  const p = $('#p-deck'); p.innerHTML = '';
+  const ctxM = { columns: columnsOf, changed: () => changed(), rebuild: () => {} };
+  p.appendChild(el('h2', null, 'Look'));
+  const a = el('div'); buildFields(a, THEME_FIELDS, state.deck.theme, ctxM); p.appendChild(a);
+  p.appendChild(el('h2', null, 'Settings'));
+  const b = el('div'); buildFields(b, META_FIELDS, state.deck.meta, ctxM); p.appendChild(b);
+}
+function renderEditor(){ renderSectionsEditor(); renderDataEditor(); renderDeckEditor(); }
+
+/* ================= Modes ================= */
+function setMode(m){
+  state.mode = m;
+  $('#app').className = 'mode-' + m;
+  $('#v-edit').hidden = !(state.deck.meta.allowEdit || state.cameFromBuild);
+  if (m === 'build'){ state.slides = false; document.documentElement.classList.remove('slides-on'); $('#v-slides').setAttribute('aria-pressed', 'false'); document.title = 'Pitch Deck Builder'; }
+  clearInterval(state.refreshTimer);
+  if (m === 'view' && +state.deck.meta.refreshMinutes > 0) state.refreshTimer = setInterval(() => refreshAll(false), Math.max(1, +state.deck.meta.refreshMinutes) * 60000);
+  loadData(); renderDeck();
+}
+function toggleSlides(){
+  state.slides = !state.slides;
+  $('#v-slides').setAttribute('aria-pressed', String(state.slides));
+  document.documentElement.classList.toggle('slides-on', state.slides);
+  renderDeck();
+  if (state.slides) { const first = $('#deck-root section.sec'); first && first.scrollIntoView(); }
+}
+function stepSlide(dir){
+  const secs = $$('#deck-root section.sec'); if (!secs.length) return;
+  let cur = 0, best = Infinity;
+  secs.forEach((s, i) => { const d = Math.abs(s.getBoundingClientRect().top); if (d < best){ best = d; cur = i; } });
+  const next = secs[Math.max(0, Math.min(secs.length - 1, cur + dir))];
+  next.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+document.addEventListener('keydown', e => {
+  if (state.mode !== 'view' || !state.slides) return;
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); stepSlide(1); }
+  else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); stepSlide(-1); }
+  else if (e.key === 'Escape' && state.cameFromBuild){ setMode('build'); }
+});
+
+/* ================= Share / export ================= */
+function shareCopy(forShare){
+  const d = structuredClone(state.deck);
+  if (forShare) d.sources.forEach(s => { if (s.url) s.csv = s.csv || ''; });
+  return d;
+}
+function baseUrl(){ return location.href.split('#')[0].split('?')[0]; }
+async function openShare(){
+  const dlg = $('#share-dlg');
+  const full = shareCopy(true);
+  let payload = full, stripped = false;
+  let code = await pack({ deck: payload });
+  if (code.length > 30000 && full.sources.some(s => s.url)){
+    payload = structuredClone(full); payload.sources.forEach(s => { if (s.url) s.csv = ''; }); stripped = true;
+    code = await pack({ deck: payload });
+  }
+  const viewLink = baseUrl() + '#view=' + code, editLink = baseUrl() + '#edit=' + code;
+  const local = location.protocol === 'file:';
+  const hasData = JSON.stringify(state.deck).includes('"data:');
+  dlg.innerHTML = '';
+  const wrap = el('div');
+  wrap.innerHTML = '<h2 id="share-h">Share this pitch</h2>' +
+    '<p class="hint">The whole deck is packed into the link itself, so nothing is uploaded anywhere. Data sources with a CSV link pull fresh numbers each time the link is opened.</p>' +
+    (local ? '<p class="warn">You are running this tool from a file on your computer, so these links only work on this computer. Host the tool (for example on GitHub Pages) and share from there.</p>' : '') +
+    '<h3>Viewer link</h3><textarea readonly id="sh-view"></textarea><div class="row" style="display:flex;gap:6px;justify-content:space-between;align-items:center"><span class="hint" id="sh-len"></span><button class="btn small" type="button" id="sh-cv">Copy viewer link</button></div>' +
+    '<h3>Editable copy</h3><p class="hint">Opens the deck in the builder so a collaborator can make their own changes.</p><textarea readonly id="sh-edit"></textarea><div style="text-align:right"><button class="btn small" type="button" id="sh-ce">Copy builder link</button></div>' +
+    '<h3>A link that never changes</h3><p class="hint">Save the deck with <b>Save file</b>, upload it to your repo (for example <code>decks/sponsor.json</code>), and paste its address here. Update the file and the same link shows the new version.</p><input type="url" id="sh-json" placeholder="deck.json, or a full https:// address"><textarea readonly id="sh-jlink" style="margin-top:6px"></textarea><div style="text-align:right"><button class="btn small" type="button" id="sh-cj">Copy link</button></div>' +
+    '<div class="actions"><button class="btn primary" type="button" id="sh-close">Done</button></div>';
+  dlg.appendChild(wrap);
+  $('#sh-view', dlg).value = viewLink; $('#sh-edit', dlg).value = editLink;
+  const len = viewLink.length;
+  $('#sh-len', dlg).textContent = len.toLocaleString() + ' characters' + (len > 8000 ? '. Long links can break in some email and chat apps' + (hasData ? '; uploaded images are the usual cause. Hosted image links keep it short.' : '.') : '.') + (stripped ? ' Linked data is fetched live instead of packed in.' : '');
+  const copy = async (txt, msg) => { try { await navigator.clipboard.writeText(txt); toast(msg); } catch(e){ toast('Select the text and copy it manually.'); } };
+  $('#sh-cv', dlg).onclick = () => copy(viewLink, 'Viewer link copied.');
+  $('#sh-ce', dlg).onclick = () => copy(editLink, 'Builder link copied.');
+  const jin = $('#sh-json', dlg), jout = $('#sh-jlink', dlg);
+  const updJ = () => { const u = jin.value.trim(); jout.value = u ? baseUrl() + '?deck=' + encodeURIComponent(u) : ''; };
+  jin.addEventListener('input', updJ);
+  $('#sh-cj', dlg).onclick = () => jout.value ? copy(jout.value, 'Link copied.') : toast('Paste the address of your deck file first.');
+  $('#sh-close', dlg).onclick = () => dlg.close();
+  dlg.showModal();
+}
+function exportHTML(){
+  const payload = JSON.stringify({ deck: state.deck, view: true }).replace(/</g, '\\u003c');
+  const re = new RegExp('<script id="embedded-deck" type="application/json">[\\s\\S]*?<' + '/script>');
+  const out = PRISTINE.replace(re, () => '<script id="embedded-deck" type="application/json">' + payload + '<' + '/script>');
+  download(slug(state.deck.meta.title) + '.html', out, 'text/html');
+  toast('Exported. The file opens as the finished pitch; linked data still updates.');
+}
+function saveJSON(){ download(slug(state.deck.meta.title) + '.json', JSON.stringify(state.deck, null, 2), 'application/json'); toast('Deck saved as a file.'); }
+
+/* ================= Wiring ================= */
+function useDeck(d, origin){
+  state.deck = hydrateDeck(d); state.origin = origin || 'local'; state.data = {};
+  state.openSections = new Set(); state.openSources = new Set();
+  loadData();
+}
+$$('.tabs button').forEach(b => b.addEventListener('click', () => {
+  state.tab = b.dataset.tab;
+  $$('.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  ['sections','data','deck'].forEach(t => $('#p-' + t).hidden = t !== state.tab);
+  if (state.tab === 'data') renderDataEditor();
+  if (state.tab === 'sections') renderSectionsEditor();
+}));
+$('#b-new').onclick = () => { if (!confirm('Start a new, empty deck? Save a file first if you want to keep this one.')) return; useDeck(blankDeck()); const c = Object.assign({ id: uid('s'), type: 'cover' }, SCHEMA.cover.make()); state.deck.sections.push(c); state.openSections.add(c.id); changed(); renderEditor(); renderDeck(); };
+$('#b-sample').onclick = () => { if (state.deck.sections.length && !confirm('Replace the current deck with the sample? Save a file first if you want to keep it.')) return; useDeck(sampleDeck()); changed(); renderEditor(); renderDeck(); };
+$('#b-open').onclick = () => $('#f-open').click();
+$('#f-open').onchange = e => { const f = e.target.files[0]; if (!f) return; f.text().then(t => { try { const d = JSON.parse(t); useDeck(d.deck || d); changed(); renderEditor(); renderDeck(); refreshAll(false); toast('Opened ' + f.name + '.'); } catch(err){ toast('That file is not a deck saved by this tool.'); } }); e.target.value = ''; };
+$('#b-save').onclick = saveJSON;
+$('#b-export').onclick = exportHTML;
+$('#b-print').onclick = () => window.print();
+$('#v-print').onclick = () => window.print();
+$('#b-share').onclick = () => openShare().catch(e => toast('Could not build the link: ' + e.message));
+$('#b-present').onclick = () => { state.cameFromBuild = true; setMode('view'); window.scrollTo(0, 0); };
+$('#v-slides').onclick = toggleSlides;
+$('#v-refresh').onclick = () => refreshAll(true);
+$('#v-edit').onclick = () => {
+  if (!state.cameFromBuild){
+    let hasLocal = false; try { hasLocal = !!localStorage.getItem(LS_KEY); } catch(e){}
+    if (hasLocal && !confirm('Open this deck in the builder? It will replace the deck saved in this browser.')) return;
+    state.origin = 'local'; history.replaceState(null, '', baseUrl()); scheduleSave();
+  }
+  state.cameFromBuild = true; setMode('build'); renderEditor();
+};
+$('#deck-root').addEventListener('click', e => {
+  if (state.mode !== 'build') return;
+  if (e.target.closest('a,iframe,video,audio,summary,details')) return;
+  const sec = e.target.closest('section.sec[data-sid]'); if (!sec) return;
+  const id = sec.dataset.sid;
+  if (state.tab !== 'sections') $('.tabs button[data-tab="sections"]').click();
+  state.openSections.add(id); renderSectionsEditor();
+  const c = $('[data-card="' + CSS.escape(id) + '"]'); if (c){ c.scrollIntoView({ block: 'start' }); const f = c.querySelector('.body input,.body textarea,.body select'); f && f.focus({preventScroll:true}); }
+});
+$('#deck-root').addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]'); if (!a) return;
+  const t = document.getElementById(a.getAttribute('href').slice(1)); if (t){ e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+});
+window.addEventListener('resize', debounce(() => renderDeck(), 150));
+window.addEventListener('beforeprint', () => { if (state.slides){ state.wasSlides = true; toggleSlides(); } });
+window.addEventListener('afterprint', () => { if (state.wasSlides){ state.wasSlides = false; toggleSlides(); } });
+
+/* ================= Start ================= */
+(async function init(){
+  let embedded = null;
+  try { embedded = JSON.parse($('#embedded-deck').textContent); } catch(e){}
+  const params = new URLSearchParams(location.search);
+  const hash = location.hash;
+  try {
+    if (embedded && embedded.deck){ useDeck(embedded.deck, 'embedded'); setMode('view'); }
+    else if (params.get('deck')){
+      const u = new URL(params.get('deck'), location.href);
+      if (!/^https?:$/.test(u.protocol)) throw new Error('The deck address must be a web link.');
+      const res = await fetch(u.href, { cache: 'no-store' }); if (!res.ok) throw new Error('Could not load the deck file (error ' + res.status + ').');
+      const d = await res.json(); useDeck(d.deck || d, 'remote'); setMode('view');
+    }
+    else if (hash.startsWith('#view=')){ const o = await unpack(hash.slice(6)); useDeck(o.deck || o, 'link'); setMode('view'); }
+    else if (hash.startsWith('#edit=')){ const o = await unpack(hash.slice(6)); useDeck(o.deck || o, 'local'); history.replaceState(null, '', baseUrl()); scheduleSave(); state.cameFromBuild = true; setMode('build'); renderEditor(); toast('Opened an editable copy from the link.'); }
+    else {
+      let saved = null, starter = null, seen = null;
+      try { saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); seen = localStorage.getItem(LS_KEY + '.starter'); } catch(e){}
+      try { starter = JSON.parse($('#starter-deck').textContent); } catch(e){}
+      if (starter && starter.starterId && seen !== starter.starterId){
+        saved = starter; try { localStorage.setItem(LS_KEY + '.starter', starter.starterId); } catch(e){}
+        scheduleSave();
+      }
+      useDeck(saved || sampleDeck(), 'local'); state.cameFromBuild = true; setMode('build'); renderEditor();
+    }
+  } catch (e) {
+    console.error(e);
+    useDeck(sampleDeck(), 'local'); state.cameFromBuild = true; setMode('build'); renderEditor();
+    toast('Could not open that link: ' + (e.message || 'it may be incomplete') + ' Showing the sample instead.', 6000);
+  }
+  refreshAll(false);
+})();
+</script></body></html>
